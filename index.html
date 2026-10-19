@@ -1,0 +1,1930 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legenda Pose & Struktur: Tantangan Kinestetik</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --font-heading: 'Fredoka', sans-serif;
+            --font-body: 'Plus Jakarta Sans', sans-serif;
+        }
+        body {
+            font-family: var(--font-body);
+            background-color: #FFFBEB;
+            background-image: 
+                radial-gradient(at 10% 10%, rgba(251, 191, 36, 0.22) 0px, transparent 50%),
+                radial-gradient(at 90% 15%, rgba(16, 185, 129, 0.18) 0px, transparent 50%),
+                radial-gradient(at 50% 90%, rgba(249, 115, 22, 0.15) 0px, transparent 50%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            user-select: none;
+        }
+        h1, h2, h3, .font-display {
+            font-family: var(--font-heading);
+        }
+        .batik-pattern {
+            background-image: radial-gradient(#d97706 1.25px, transparent 1.25px), radial-gradient(#d97706 1.25px, #FFFBEB 1.25px);
+            background-size: 28px 28px;
+            background-position: 0 0, 14px 14px;
+        }
+        .btn-3d {
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 6px 0 0 rgba(0,0,0,0.22);
+        }
+        .btn-3d:active:not(:disabled) {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 0 rgba(0,0,0,0.22);
+        }
+        @keyframes flashShutter {
+            0% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+        .shutter-flash {
+            animation: flashShutter 0.6s ease-out forwards;
+        }
+        @keyframes pulseZone {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.04); }
+        }
+        .zone-active {
+            animation: pulseZone 0.6s infinite;
+        }
+        .mirror-video {
+            transform: scaleX(-1);
+        }
+    </style>
+</head>
+<body class="text-slate-800 flex flex-col min-h-screen">
+
+    <header class="bg-gradient-to-r from-amber-700 via-orange-600 to-amber-700 text-white shadow-lg border-b-4 border-amber-900 sticky top-0 z-40">
+        <div class="max-w-[1600px] mx-auto px-4 py-2.5 flex flex-wrap items-center justify-between gap-3">
+            <!-- Brand Title -->
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-2xl bg-amber-300 text-amber-950 flex items-center justify-center shadow-inner border-2 border-white font-display text-2xl font-bold">
+                    🎭
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="bg-amber-300 text-amber-950 text-xs font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider">Bahasa Indonesia SMP</span>
+                        <span class="bg-emerald-400 text-emerald-950 text-xs font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider">Mode Kinestetik AI</span>
+                    </div>
+                    <h1 class="text-xl md:text-2xl font-bold tracking-wide text-white drop-shadow">
+                        Legenda Pose & Struktur: Tantangan Kinestetik
+                    </h1>
+                </div>
+            </div>
+
+            <!-- Live Score & Controls -->
+            <div class="flex items-center flex-wrap gap-2.5">
+                <!-- Mode Urutan Toggle -->
+                <button id="btnToggleOrder" onclick="toggleQuestionOrder()" class="bg-amber-800/80 hover:bg-amber-900 text-amber-100 text-xs md:text-sm font-semibold px-3.5 py-2 rounded-xl border border-amber-400/40 flex items-center gap-2 transition" title="Ubah urutan kemunculan struktur">
+                    <span id="orderIcon">🔀</span>
+                    <span id="orderLabel">Babak: Acak Struktur</span>
+                </button>
+
+                <!-- Sound Toggle -->
+                <button id="btnSound" onclick="toggleSound()" class="bg-amber-800/80 hover:bg-amber-900 text-amber-100 text-xs md:text-sm font-semibold px-3.5 py-2 rounded-xl border border-amber-400/40 flex items-center gap-1.5 transition">
+                    <span id="soundIcon">🔊</span>
+                    <span class="hidden sm:inline">Suara</span>
+                </button>
+
+                <!-- Guide Modal Trigger -->
+                <button onclick="openGuideModal()" class="bg-white/15 hover:bg-white/25 text-white text-xs md:text-sm font-bold px-3.5 py-2 rounded-xl border border-white/30 flex items-center gap-1.5 transition">
+                    <span>📖</span>
+                    <span>Panduan Guru</span>
+                </button>
+
+                <!-- Score Pill -->
+                <div class="bg-amber-950/90 border-2 border-amber-300 px-4 py-1.5 rounded-2xl flex items-center gap-3 shadow-md">
+                    <div class="text-right">
+                        <div class="text-[10px] uppercase tracking-wider text-amber-300 font-bold">Total Skor Tim</div>
+                        <div id="headerScore" class="font-display text-2xl font-bold text-amber-300 leading-none">0</div>
+                    </div>
+                    <span class="text-2xl">🏆</span>
+                </div>
+
+                <!-- Back to Menu Button (Hidden on Home) -->
+                <button id="btnBackMenu" onclick="returnToMainMenu()" class="hidden bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs md:text-sm px-4 py-2.5 rounded-xl border-2 border-rose-300 btn-3d flex items-center gap-1.5">
+                    <span>🏠</span>
+                    <span>Pilih Legenda</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-[1600px] w-full mx-auto px-4 py-5 flex flex-col justify-between">
+        
+        <!-- VIEW 1: MAIN MENU (5 LEGENDS SELECTION) -->
+        <section id="viewMenu" class="space-y-6 my-auto">
+            <!-- Hero Banner -->
+            <div class="bg-gradient-to-br from-amber-100 via-orange-50 to-emerald-50 border-4 border-amber-500 rounded-3xl p-6 md:p-8 shadow-xl relative overflow-hidden">
+                <div class="max-w-4xl space-y-3 relative z-10">
+                    <div class="inline-flex items-center gap-2 bg-orange-600 text-white text-xs md:text-sm font-extrabold px-3.5 py-1 rounded-full shadow">
+                        <span>✨</span>
+                        <span>Papan Interaktif & Proyektor Kelas</span>
+                    </div>
+                    <h2 class="text-2xl md:text-4xl font-bold text-amber-950 leading-tight">
+                        Pilih Cerita Legenda Nusantara, Analisis Strukturnya & Peragakan Posenya!
+                    </h2>
+                    <p class="text-slate-700 text-sm md:text-base leading-relaxed">
+                        Setiap legenda terdiri dari <strong>4 Babak Struktur Teks</strong> (<em>Orientasi, Komplikasi, Resolusi, Koda</em>). Kelompok yang maju ke depan kelas harus <strong>menebak struktur teks</strong> (bisa dengan lambaian tangan ke sensor kamera atau sentuh layar) lalu <strong>mematung (Freeze Pose)</strong> sesuai adegan untuk difoto!
+                    </p>
+                </div>
+
+                <!-- Quick Legend Structure Cheat-Sheet Pills -->
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-6 relative z-10">
+                    <div class="bg-sky-100/90 border-2 border-sky-400 rounded-2xl p-3 flex items-start gap-3">
+                        <span class="text-2xl bg-sky-500 text-white w-10 h-10 rounded-xl flex items-center justify-center font-display font-bold shrink-0">1</span>
+                        <div>
+                            <h3 class="font-bold text-sky-950 text-sm md:text-base">Orientasi</h3>
+                            <p class="text-xs text-sky-800">Pengenalan tokoh, watak awal, serta latar tempat dan waktu cerita.</p>
+                        </div>
+                    </div>
+                    <div class="bg-rose-100/90 border-2 border-rose-400 rounded-2xl p-3 flex items-start gap-3">
+                        <span class="text-2xl bg-rose-500 text-white w-10 h-10 rounded-xl flex items-center justify-center font-display font-bold shrink-0">2</span>
+                        <div>
+                            <h3 class="font-bold text-rose-950 text-sm md:text-base">Komplikasi</h3>
+                            <p class="text-xs text-rose-800">Munculnya masalah, pertentangan, hingga puncak konflik antartokoh.</p>
+                        </div>
+                    </div>
+                    <div class="bg-emerald-100/90 border-2 border-emerald-400 rounded-2xl p-3 flex items-start gap-3">
+                        <span class="text-2xl bg-emerald-500 text-white w-10 h-10 rounded-xl flex items-center justify-center font-display font-bold shrink-0">3</span>
+                        <div>
+                            <h3 class="font-bold text-emerald-950 text-sm md:text-base">Resolusi</h3>
+                            <p class="text-xs text-emerald-800">Penyelesaian masalah atau akhir dari puncak konflik cerita.</p>
+                        </div>
+                    </div>
+                    <div class="bg-purple-100/90 border-2 border-purple-400 rounded-2xl p-3 flex items-start gap-3">
+                        <span class="text-2xl bg-purple-600 text-white w-10 h-10 rounded-xl flex items-center justify-center font-display font-bold shrink-0">4</span>
+                        <div>
+                            <h3 class="font-bold text-purple-950 text-sm md:text-base">Koda</h3>
+                            <p class="text-xs text-purple-800">Penutup cerita, asal-usul nama tempat, dan pesan moral/amanat.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5 Legends Cards Grid -->
+            <div>
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="text-xl md:text-2xl font-bold text-amber-950 flex items-center gap-2">
+                        <span>🗺️</span>
+                        <span>Pilih 1 dari 5 Teks Legenda untuk Mulai Bermain:</span>
+                    </h3>
+                    <span class="text-xs md:text-sm font-semibold text-amber-800 bg-amber-200/70 px-3 py-1 rounded-full">
+                        Klik kartu legenda pilihan kelompokmu!
+                    </span>
+                </div>
+
+                <div id="legendCardsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                    <!-- Populated dynamically via JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 2: SPLIT-SCREEN GAMEPLAY (4 ROUNDS) -->
+        <section id="viewGame" class="hidden flex-1 flex flex-col gap-4">
+            <!-- Top Round Progress & Active Legend Bar -->
+            <div class="bg-white border-2 border-amber-400 rounded-2xl px-4 py-3 shadow-md flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                    <span id="activeLegendEmoji" class="text-3xl bg-amber-100 p-2 rounded-xl border border-amber-300">⛰️</span>
+                    <div>
+                        <div id="activeLegendRegion" class="text-xs font-extrabold uppercase tracking-wider text-orange-600">Jawa Tengah</div>
+                        <h2 id="activeLegendTitle" class="text-lg md:text-2xl font-bold text-slate-900">Asal-usul Kota Salatiga</h2>
+                    </div>
+                </div>
+
+                <!-- 4 Round Step Indicators -->
+                <div class="flex items-center gap-2">
+                    <span class="text-xs md:text-sm font-bold text-slate-600 mr-1">Progres Babak:</span>
+                    <div id="roundIndicators" class="flex items-center gap-2">
+                        <!-- Rendered via JS -->
+                    </div>
+                </div>
+
+                <!-- Teacher Bonus & Next Round Controls -->
+                <div class="flex items-center gap-2">
+                    <button id="btnBonusPose" onclick="awardTeacherPoseBonus()" class="bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold text-xs md:text-sm px-4 py-2.5 rounded-xl border-2 border-pink-200 btn-3d flex items-center gap-1.5">
+                        <span>🌟</span>
+                        <span>+10 Bonus Ekspresi Pose (Guru)</span>
+                    </button>
+                    <button id="btnNextRound" onclick="goToNextRound()" class="hidden bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-extrabold text-xs md:text-sm px-5 py-2.5 rounded-xl border-2 border-emerald-200 btn-3d flex items-center gap-2 animate-bounce">
+                        <span id="nextRoundText">Babak Berikutnya</span>
+                        <span>➡️</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- SPLIT SCREEN CONTAINER -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 flex-1 items-stretch">
+                
+                <!-- LEFT SIDE: STORY & CHALLENGE PANEL (6 Columns) -->
+                <div class="lg:col-span-6 bg-white border-4 border-amber-400 rounded-3xl p-5 shadow-xl flex flex-col justify-between space-y-4">
+                    
+                    <div class="space-y-4">
+                        <!-- Round Badge & Instruction -->
+                        <div class="flex items-center justify-between gap-2 border-b-2 border-amber-100 pb-3">
+                            <div class="flex items-center gap-2">
+                                <span id="badgeRoundNum" class="bg-amber-500 text-white font-display font-bold px-3.5 py-1 rounded-xl text-sm md:text-base shadow">
+                                    Babak 1 / 4
+                                </span>
+                                <span class="text-xs md:text-sm font-bold text-slate-600">
+                                    Baca Kutipan & Peragakan Posenya!
+                                </span>
+                            </div>
+                            <button onclick="speakCurrentStory()" class="bg-amber-100 hover:bg-amber-200 text-amber-900 text-xs font-bold px-3 py-1.5 rounded-xl border border-amber-300 flex items-center gap-1.5 transition" title="Bacakan teks dengan suara">
+                                <span>🗣️</span>
+                                <span>Bacakan Teks</span>
+                            </button>
+                        </div>
+
+                        <!-- Story Excerpt Box -->
+                        <div class="bg-amber-50/90 border-2 border-amber-300 rounded-2xl p-4 md:p-5 relative shadow-inner">
+                            <div class="text-[11px] font-extrabold uppercase tracking-wider text-amber-800 mb-1.5 flex items-center gap-1.5">
+                                <span>📜</span>
+                                <span>Kutipan Paragraf Teks Legenda:</span>
+                            </div>
+                            <p id="storyParagraphText" class="text-slate-800 text-base md:text-lg font-semibold leading-relaxed">
+                                <!-- Story paragraph injected here -->
+                            </p>
+                        </div>
+
+                        <!-- Visual SVG Illustration + Physical Pose Challenge Card -->
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-3 bg-gradient-to-br from-orange-50 to-amber-100/80 border-2 border-orange-300 rounded-2xl p-3.5 items-center">
+                            <!-- Dynamic SVG Illustration -->
+                            <div class="md:col-span-5 bg-white rounded-xl border-2 border-amber-200 overflow-hidden shadow-sm h-44 md:h-48 flex items-center justify-center relative" id="svgSceneContainer">
+                                <!-- Dynamic SVG inserted via JS -->
+                            </div>
+
+                            <!-- Physical Pose Instructions -->
+                            <div class="md:col-span-7 space-y-2">
+                                <div class="inline-flex items-center gap-1.5 bg-orange-600 text-white text-xs font-extrabold px-3 py-1 rounded-full uppercase tracking-wide shadow-sm">
+                                    <span>🕺</span>
+                                    <span>Tantangan Pose Fisik Kelompok</span>
+                                </div>
+                                <h3 id="scenePoseTitle" class="font-display text-lg md:text-xl font-bold text-amber-950">
+                                    Pose Sidang Pendopo & Pengemis
+                                </h3>
+                                <p id="scenePoseInstruction" class="text-xs md:text-sm text-slate-700 font-medium leading-relaxed bg-white/80 p-3 rounded-xl border border-orange-200">
+                                    <!-- Pose instructions injected here -->
+                                </p>
+                                <div class="flex flex-wrap gap-1.5 pt-1" id="poseRolesBadges">
+                                    <!-- Role pills -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Feedback Explanation Box (Shown after answering) -->
+                    <div id="answerFeedbackBox" class="hidden rounded-2xl p-4 border-2 transition-all">
+                        <!-- Populated when user selects an answer -->
+                    </div>
+
+                    <!-- 4 Structure Answer Buttons -->
+                    <div class="space-y-2 pt-1">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs md:text-sm font-extrabold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
+                                <span>🎯</span>
+                                <span>Pilih Struktur Teks (Klik Tombol atau Lambaikan Tangan di Sudut Kamera):</span>
+                            </span>
+                        </div>
+
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5" id="structureButtonsGrid">
+                            <button onclick="submitStructureAnswer('Orientasi')" id="btnAns_Orientasi" class="btn-3d bg-sky-500 hover:bg-sky-400 text-white p-3 rounded-2xl border-2 border-sky-200 flex flex-col items-center justify-center gap-1 text-center group">
+                                <span class="text-xs font-extrabold bg-sky-800/40 px-2 py-0.5 rounded-full">Sudut Kiri Atas ↖️</span>
+                                <span class="font-display text-lg md:text-xl font-bold">Orientasi</span>
+                                <span class="text-[11px] text-sky-100 leading-tight">Pengenalan Tokoh & Latar</span>
+                            </button>
+
+                            <button onclick="submitStructureAnswer('Komplikasi')" id="btnAns_Komplikasi" class="btn-3d bg-rose-500 hover:bg-rose-400 text-white p-3 rounded-2xl border-2 border-rose-200 flex flex-col items-center justify-center gap-1 text-center group">
+                                <span class="text-xs font-extrabold bg-rose-800/40 px-2 py-0.5 rounded-full">Sudut Kanan Atas ↗️</span>
+                                <span class="font-display text-lg md:text-xl font-bold">Komplikasi</span>
+                                <span class="text-[11px] text-rose-100 leading-tight">Muncul Konflik & Masalah</span>
+                            </button>
+
+                            <button onclick="submitStructureAnswer('Resolusi')" id="btnAns_Resolusi" class="btn-3d bg-emerald-500 hover:bg-emerald-400 text-white p-3 rounded-2xl border-2 border-emerald-200 flex flex-col items-center justify-center gap-1 text-center group">
+                                <span class="text-xs font-extrabold bg-emerald-800/40 px-2 py-0.5 rounded-full">Sudut Kiri Bawah ↙️</span>
+                                <span class="font-display text-lg md:text-xl font-bold">Resolusi</span>
+                                <span class="text-[11px] text-emerald-100 leading-tight">Penyelesaian Konflik</span>
+                            </button>
+
+                            <button onclick="submitStructureAnswer('Koda')" id="btnAns_Koda" class="btn-3d bg-purple-600 hover:bg-purple-500 text-white p-3 rounded-2xl border-2 border-purple-200 flex flex-col items-center justify-center gap-1 text-center group">
+                                <span class="text-xs font-extrabold bg-purple-900/40 px-2 py-0.5 rounded-full">Sudut Kanan Bawah ↘️</span>
+                                <span class="font-display text-lg md:text-xl font-bold">Koda</span>
+                                <span class="text-[11px] text-purple-100 leading-tight">Pesan Moral & Penutup</span>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- RIGHT SIDE: WEBCAM MOTION SENSOR & POSE STUDIO (6 Columns) -->
+                <div class="lg:col-span-6 bg-slate-900 border-4 border-amber-500 rounded-3xl p-5 shadow-xl flex flex-col justify-between text-white space-y-4">
+                    
+                    <!-- Camera Control Bar -->
+                    <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-700 pb-3">
+                        <div class="flex items-center gap-2">
+                            <span id="camStatusDot" class="w-3 h-3 rounded-full bg-emerald-400 animate-ping"></span>
+                            <h3 class="font-display text-lg md:text-xl font-bold text-amber-300">
+                                Studio Kamera Gerak & Pose Siswa
+                            </h3>
+                        </div>
+
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <!-- Toggle Motion Detection Sensor -->
+                            <button id="btnToggleMotion" onclick="toggleMotionSensor()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold px-3 py-1.5 rounded-xl border border-emerald-300 flex items-center gap-1.5 transition">
+                                <span>👋</span>
+                                <span id="motionStatusText">Sensor Gerak: AKTIF</span>
+                            </button>
+
+                            <!-- Toggle Camera ON/OFF -->
+                            <button id="btnToggleCam" onclick="toggleCameraStream()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs font-bold px-3 py-1.5 rounded-xl border border-slate-500 flex items-center gap-1.5 transition">
+                                <span>📷</span>
+                                <span id="camToggleText">Matikan Kamera</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Live Video Stage with 4 Corner Motion Zones Overlay -->
+                    <div class="relative w-full aspect-video bg-slate-950 rounded-2xl overflow-hidden border-2 border-slate-700 shadow-inner flex items-center justify-center">
+                        <!-- Live Webcam Video (Mirrored) -->
+                        <video id="webcamVideo" autoplay playsinline muted class="w-full h-full object-cover mirror-video"></video>
+
+                        <!-- Fallback Simulated Stage Canvas (shown when camera is off/unavailable) -->
+                        <canvas id="fallbackStageCanvas" width="640" height="360" class="hidden w-full h-full object-cover"></canvas>
+
+                        <!-- Hidden Processing Canvas for Motion Comparison -->
+                        <canvas id="motionProcCanvas" width="160" height="120" class="hidden"></canvas>
+
+                        <!-- 4 CORNER MOTION ZONES OVERLAY -->
+                        <div id="motionZonesOverlay" class="absolute inset-0 pointer-events-none flex flex-col justify-between p-3">
+                            <!-- Top Row Corners -->
+                            <div class="flex justify-between items-start">
+                                <!-- Top-Left: ORIENTASI -->
+                                <div id="zone_Orientasi" class="w-36 md:w-44 bg-sky-600/45 backdrop-blur-sm border-2 border-sky-300 rounded-2xl p-2.5 transition-all">
+                                    <div class="flex items-center justify-between text-xs font-extrabold text-sky-100">
+                                        <span>↖️ LAMBAI DI SINI</span>
+                                        <span id="pct_Orientasi">0%</span>
+                                    </div>
+                                    <div class="font-display text-base md:text-lg font-bold text-white drop-shadow">ORIENTASI</div>
+                                    <div class="w-full bg-slate-900/70 h-2.5 rounded-full overflow-hidden mt-1 border border-sky-300/40">
+                                        <div id="bar_Orientasi" class="bg-sky-300 h-full w-0 transition-all duration-100"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Top-Right: KOMPLIKASI -->
+                                <div id="zone_Komplikasi" class="w-36 md:w-44 bg-rose-600/45 backdrop-blur-sm border-2 border-rose-300 rounded-2xl p-2.5 transition-all">
+                                    <div class="flex items-center justify-between text-xs font-extrabold text-rose-100">
+                                        <span id="pct_Komplikasi">0%</span>
+                                        <span>LAMBAI DI SINI ↗️</span>
+                                    </div>
+                                    <div class="font-display text-base md:text-lg font-bold text-white text-right drop-shadow">KOMPLIKASI</div>
+                                    <div class="w-full bg-slate-900/70 h-2.5 rounded-full overflow-hidden mt-1 border border-rose-300/40">
+                                        <div id="bar_Komplikasi" class="bg-rose-300 h-full w-0 transition-all duration-100"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Center Instruction Hint -->
+                            <div class="self-center bg-slate-900/65 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/20 text-center">
+                                <p id="cameraOverlayHint" class="text-xs font-bold text-amber-200">
+                                    👋 Lambaikan tangan di salah satu sudut untuk menjawab, atau berpose di tengah layar!
+                                </p>
+                            </div>
+
+                            <!-- Bottom Row Corners -->
+                            <div class="flex justify-between items-end">
+                                <!-- Bottom-Left: RESOLUSI -->
+                                <div id="zone_Resolusi" class="w-36 md:w-44 bg-emerald-600/45 backdrop-blur-sm border-2 border-emerald-300 rounded-2xl p-2.5 transition-all">
+                                    <div class="flex items-center justify-between text-xs font-extrabold text-emerald-100">
+                                        <span>↙️ LAMBAI DI SINI</span>
+                                        <span id="pct_Resolusi">0%</span>
+                                    </div>
+                                    <div class="font-display text-base md:text-lg font-bold text-white drop-shadow">RESOLUSI</div>
+                                    <div class="w-full bg-slate-900/70 h-2.5 rounded-full overflow-hidden mt-1 border border-emerald-300/40">
+                                        <div id="bar_Resolusi" class="bg-emerald-300 h-full w-0 transition-all duration-100"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Bottom-Right: KODA -->
+                                <div id="zone_Koda" class="w-36 md:w-44 bg-purple-600/45 backdrop-blur-sm border-2 border-purple-300 rounded-2xl p-2.5 transition-all">
+                                    <div class="flex items-center justify-between text-xs font-extrabold text-purple-100">
+                                        <span id="pct_Koda">0%</span>
+                                        <span>LAMBAI DI SINI ↘️</span>
+                                    </div>
+                                    <div class="font-display text-base md:text-lg font-bold text-white text-right drop-shadow">KODA</div>
+                                    <div class="w-full bg-slate-900/70 h-2.5 rounded-full overflow-hidden mt-1 border border-purple-300/40">
+                                        <div id="bar_Koda" class="bg-purple-300 h-full w-0 transition-all duration-100"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 5-SECOND COUNTDOWN OVERLAY -->
+                        <div id="countdownOverlay" class="hidden absolute inset-0 bg-slate-950/60 backdrop-blur-[2px] flex flex-col items-center justify-center z-20">
+                            <div class="text-sm md:text-base font-extrabold uppercase tracking-widest text-amber-300 mb-2">
+                                Siapkan Pose Terbaik Kelompokmu!
+                            </div>
+                            <div id="countdownNumber" class="font-display text-7xl md:text-9xl font-bold text-white drop-shadow-[0_6px_12px_rgba(245,158,11,0.8)] animate-bounce">
+                                5
+                            </div>
+                        </div>
+
+                        <!-- SHUTTER FLASH OVERLAY -->
+                        <div id="shutterFlashOverlay" class="hidden absolute inset-0 bg-white z-30 pointer-events-none"></div>
+                    </div>
+
+                    <!-- Pose Capture Action & Mini Preview Strip -->
+                    <div class="grid grid-cols-1 sm:grid-cols-12 gap-3 items-center pt-1">
+                        <div class="sm:col-span-7">
+                            <button id="btnCapturePose" onclick="startPoseCountdown()" class="w-full btn-3d bg-gradient-to-r from-amber-400 via-orange-500 to-amber-500 hover:from-amber-300 hover:to-orange-400 text-slate-950 font-display font-bold text-base md:text-lg py-3.5 px-5 rounded-2xl border-2 border-amber-200 flex items-center justify-center gap-2.5 shadow-lg">
+                                <span class="text-2xl">📸</span>
+                                <span>Tangkap Pose Kelompok (Hitung Mundur 5 Detik)</span>
+                            </button>
+                        </div>
+
+                        <!-- Current Round Captured Photo Preview -->
+                        <div class="sm:col-span-5 bg-slate-800 border border-slate-600 rounded-2xl p-2 flex items-center gap-3">
+                            <div class="w-20 h-14 bg-slate-950 rounded-xl overflow-hidden border border-amber-400/50 shrink-0 flex items-center justify-center" id="miniPhotoPreviewBox">
+                                <span class="text-xs text-slate-400 text-center px-1">Belum Difoto</span>
+                            </div>
+                            <div class="text-xs leading-snug">
+                                <div class="font-bold text-amber-300" id="miniPhotoStatusTitle">Foto Babak Ini:</div>
+                                <div class="text-slate-300" id="miniPhotoStatusDesc">Klik tombol kamera untuk memotret pose kelompok!</div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 3: END-OF-LEGEND GALLERY & SCORE SUMMARY -->
+        <section id="viewGallery" class="hidden space-y-6 my-auto">
+            <div class="bg-white border-4 border-amber-500 rounded-3xl p-6 md:p-8 shadow-2xl space-y-6">
+                <!-- Header Celebration -->
+                <div class="flex flex-wrap items-center justify-between gap-4 border-b-2 border-amber-200 pb-5">
+                    <div class="flex items-center gap-4">
+                        <div class="w-16 h-16 rounded-3xl bg-amber-400 text-amber-950 flex items-center justify-center text-4xl shadow-lg border-2 border-amber-200">
+                            🎉
+                        </div>
+                        <div>
+                            <span class="bg-emerald-100 text-emerald-800 text-xs font-extrabold px-3 py-1 rounded-full uppercase">Misi 4 Struktur Selesai!</span>
+                            <h2 id="galleryLegendTitle" class="text-2xl md:text-4xl font-bold text-amber-950 mt-1">
+                                Galeri Foto Pose Kelompok
+                            </h2>
+                            <p class="text-sm text-slate-600">
+                                Dokumentasi ekspresi fisik dan penguasaan struktur teks legenda oleh kelompokmu.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Final Score Box -->
+                    <div class="flex items-center gap-4 bg-gradient-to-br from-amber-500 to-orange-600 text-white px-6 py-4 rounded-3xl shadow-xl border-2 border-amber-200">
+                        <div>
+                            <div class="text-xs uppercase font-extrabold text-amber-100 tracking-wider">Skor Akhir Legenda Ini</div>
+                            <div id="galleryFinalScore" class="font-display text-4xl md:text-5xl font-bold">100</div>
+                            <div id="galleryScoreBreakdown" class="text-xs text-amber-100 mt-0.5">Struktur: 100 | Bonus Pose: 0</div>
+                        </div>
+                        <div class="text-5xl">🏅</div>
+                    </div>
+                </div>
+
+                <!-- 4 Captured Pose Photos Grid (Orientasi, Komplikasi, Resolusi, Koda) -->
+                <div>
+                    <h3 class="text-lg md:text-xl font-bold text-slate-800 mb-3 flex items-center gap-2">
+                        <span>🖼️</span>
+                        <span>Urutan Struktur Teks & Dokumentasi Pose Kelompok:</span>
+                    </h3>
+                    <div id="galleryPhotosGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <!-- Populated via JS -->
+                    </div>
+                </div>
+
+                <!-- Action Buttons Footer -->
+                <div class="flex flex-wrap items-center justify-between gap-4 pt-4 border-t-2 border-amber-100">
+                    <button onclick="downloadCompositePoster()" class="btn-3d bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-6 py-3.5 rounded-2xl border-2 border-emerald-300 flex items-center gap-2 text-sm md:text-base">
+                        <span>💾</span>
+                        <span>Unduh Poster Kolase 4 Pose (PNG)</span>
+                    </button>
+
+                    <div class="flex items-center gap-3">
+                        <button onclick="replaySameLegend()" class="btn-3d bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-6 py-3.5 rounded-2xl border-2 border-amber-200 flex items-center gap-2 text-sm md:text-base">
+                            <span>🔄</span>
+                            <span>Mainkan Ulang Legenda Ini</span>
+                        </button>
+                        <button onclick="returnToMainMenu()" class="btn-3d bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-6 py-3.5 rounded-2xl border-2 border-indigo-300 flex items-center gap-2 text-sm md:text-base">
+                            <span>🗺️</span>
+                            <span>Pilih Legenda Lain</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- TEACHER GUIDE MODAL -->
+    <div id="guideModal" class="hidden fixed inset-0 bg-slate-950/75 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white border-4 border-amber-500 rounded-3xl max-w-3xl w-full p-6 md:p-8 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between border-b-2 border-amber-100 pb-3">
+                <h3 class="font-display text-2xl font-bold text-amber-950 flex items-center gap-2">
+                    <span>👩‍🏫</span>
+                    <span>Panduan Bermain di Kelas (Metode Kinestetik)</span>
+                </h3>
+                <button onclick="closeGuideModal()" class="w-10 h-10 rounded-xl bg-rose-100 hover:bg-rose-200 text-rose-700 font-bold text-xl flex items-center justify-center">✕</button>
+            </div>
+
+            <div class="space-y-3 text-sm md:text-base text-slate-700 leading-relaxed">
+                <div class="bg-amber-50 border-l-4 border-amber-500 p-3.5 rounded-r-xl">
+                    <strong>Tujuan Pembelajaran:</strong> Siswa mampu menganalisis dan mengidentifikasi 4 struktur teks legenda (<em>Orientasi, Komplikasi, Resolusi, Koda</em>) sekaligus mengekspresikan isi cerita melalui gerak dan pose fisik secara berkelompok.
+                </div>
+
+                <ol class="list-decimal list-inside space-y-2.5 font-medium">
+                    <li><strong>Panggil 1 Kelompok ke Depan Kelas:</strong> Minta 3–5 siswa berdiri menghadap layar proyektor / Papan Interaktif Digital dan kamera laptop guru.</li>
+                    <li><strong>Pilih 1 dari 5 Legenda Nusantara:</strong> Biarkan kelompok memilih legenda yang ingin mereka taklukkan.</li>
+                    <li><strong>Baca & Peragakan Pose:</strong> Di setiap babak, siswa membaca kutipan paragraf, lalu langsung berdiskusi cepat untuk mengambil posisi <em>Freeze Frame</em> sesuai kotak <strong>"Tantangan Pose Fisik Kelompok"</strong>.</li>
+                    <li><strong>Potret Pose (5 Detik):</strong> Klik tombol <strong>"📸 Tangkap Pose Kelompok"</strong>. Dalam hitungan 5-4-3-2-1 FREEZE, kamera akan memotret pose mereka!</li>
+                    <li><strong>Jawab Struktur dengan Gerakan atau Sentuhan:</strong> Siswa dapat melambaikan tangan di salah satu dari 4 sudut kamera (Kiri Atas = <em>Orientasi</em>, Kanan Atas = <em>Komplikasi</em>, Kiri Bawah = <em>Resolusi</em>, Kanan Bawah = <em>Koda</em>) atau menyentuh tombol di Papan Interaktif.</li>
+                    <li><strong>Poin & Apresiasi Guru:</strong> Jawaban benar pertama mendapat <strong>+25 Poin</strong>. Guru dapat menekan tombol <strong>"🌟 +10 Bonus Ekspresi Pose"</strong> jika akting kelompok sangat ekspresif dan kompak!</li>
+                </ol>
+            </div>
+
+            <div class="pt-3 border-t border-slate-200 flex justify-end">
+                <button onclick="closeGuideModal()" class="btn-3d bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-6 py-2.5 rounded-xl">
+                    Siap Dimainkan! 🚀
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <script>
+        const LEGENDS_DATA = [
+            {
+                id: 'salatiga',
+                title: 'Asal-usul Kota Salatiga',
+                subtitle: 'Ki Ageng Pandanaran & Sunan Kalijaga',
+                region: 'Jawa Tengah',
+                emoji: '🎋',
+                colorTheme: 'from-amber-500 to-orange-600',
+                badgeBg: 'bg-amber-100 text-amber-900',
+                summary: 'Kisah bupati Semarang yang gemar mengumpulkan harta hingga mendapat teguran bijak dan mengalami perampokan di tengah perjalanan.',
+                scenes: [
+                    {
+                        structure: 'Orientasi',
+                        paragraph: 'Dahulu kala di wilayah Semarang, hiduplah seorang bupati bernama Ki Ageng Pandanaran yang awalnya dikenal bijaksana. Namun lama-kelamaan, ia dan istrinya menjadi sangat serakah serta gemar mengumpulkan harta benda dari rakyatnya. Suatu pagi di pendopo kadipaten yang megah, datanglah Sunan Kalijaga yang menyamar sebagai tukang rumput tua untuk mengingatkan sang bupati agar tidak diperbudak oleh kemewahan duniawi.',
+                        poseTitle: 'Pose Sidang Pendopo & Pengemis Bijak',
+                        poseInstruction: '1 siswa duduk angkuh sambil menghitung emas imajiner, 1 siswa berdiri tenang membungkuk seperti pencari rumput bijak yang memberi nasihat, dan siswa lainnya berdiri tegap sebagai pengawal pendopo.',
+                        roles: ['Ki Ageng (Duduk Angkuh)', 'Sunan Kalijaga (Menasihati)', 'Nyi Ageng (Memeluk Harta)', 'Pengawal Pendopo'],
+                        explanation: 'Kutipan ini merupakan bagian ORIENTASI karena memperkenalkan tokoh utama (Ki Ageng Pandanaran, Nyi Ageng, dan Sunan Kalijaga), watak tokoh, serta latar tempat awal di Pendopo Kadipaten Semarang.',
+                        svgType: 'salatiga_orientasi'
+                    },
+                    {
+                        structure: 'Komplikasi',
+                        paragraph: 'Saat menempuh perjalanan menuju Gunung Jabalkat di tengah hutan lebat, Nyi Ageng Pandanaran diam-diam menyembunyikan emas dan berlian di dalam tongkat bambunya karena berat meninggalkan harta. Tiba-tiba, tiga orang perampok berwajah garang melompat dari balik semak belukar dan menghadang langkah mereka. Dengan paksa dan penuh amarah, ketiga penyamun itu merebut tongkat bambu berisi emas milik Nyi Ageng hingga terjadi ketegangan hebat.',
+                        poseTitle: 'Pose Hadangan Tiga Perampok Hutan',
+                        poseInstruction: '3 siswa memasang kuda-kuda garang menghadang jalan, sementara 2 siswa lainnya berekspresi terkejut melindungi diri sambil memegang tongkat bambu imajiner.',
+                        roles: ['3 Perampok (Kuda-kuda Garang)', 'Nyi Ageng (Memegang Tongkat)', 'Ki Ageng (Menenangkan)'],
+                        explanation: 'Kutipan ini merupakan bagian KOMPLIKASI karena memuat puncak konflik cerita, yaitu pelanggaran janji Nyi Ageng yang membawa emas serta penghadangan oleh tiga perampok di hutan.',
+                        svgType: 'salatiga_komplikasi'
+                    },
+                    {
+                        structure: 'Resolusi',
+                        paragraph: 'Setelah mengetahui perbuatan salah istri dan ketiga penyamun tersebut, Ki Ageng Pandanaran menasihati mereka dengan penuh wibawa bahwa harta yang direbut dengan kejahatan hanya akan membawa petaka. Tak lama kemudian, ketiga perampok itu menyadari kekeliruan mereka lalu datang bersujud memohon ampun di hadapan Sunan Kalijaga dan Ki Ageng Pandanaran. Mereka berjanji meninggalkan sifat buruk dan mengabdi di jalan kebaikan.',
+                        poseTitle: 'Pose Tobat & Permohonan Ampun',
+                        poseInstruction: '3 siswa berlutut menangkupkan kedua tangan di depan dada dengan ekspresi menyesal, sementara 1-2 siswa berdiri mengulurkan tangan tanda memberi maaf dengan bijaksana.',
+                        roles: ['3 Penyamun (Berlutut Menyesal)', 'Ki Ageng & Sunan (Memberi Maaf)'],
+                        explanation: 'Kutipan ini merupakan bagian RESOLUSI karena ketegangan cerita mulai mereda ketika para perampok dan Nyi Ageng menyadari kesalahan mereka serta memohon ampun.',
+                        svgType: 'salatiga_resolusi'
+                    },
+                    {
+                        structure: 'Koda',
+                        paragraph: 'Untuk mengenang peristiwa terjadinya tiga kesalahan di tempat tersebut—yaitu kesalahan Nyi Ageng yang masih serakah serta kesalahan para perampok—Ki Ageng Pandanaran menamai daerah itu "Salah Tiga", yang kini dikenal luas sebagai Kota Salatiga. Kisah ini mewariskan pesan berharga bahwa ketamakan harta hanya mendatangkan kesulitan, sedangkan kejujuran dan keikhlasan akan membawa ketenteraman hidup.',
+                        poseTitle: 'Pose Prasasti Damai Kota Salatiga',
+                        poseInstruction: 'Seluruh anggota kelompok berdiri bahu-membahu membentuk tugu prasasti sambil mengacungkan 3 jari ("Sala-tiga") dengan senyum kompak dan berwibawa.',
+                        roles: ['Formasi Tugu Prasasti', 'Acungan 3 Jari Kompak', 'Senyum Perdamaian'],
+                        explanation: 'Kutipan ini merupakan bagian KODA karena menutup cerita dengan menjelaskan asal-usul penamaan Kota Salatiga serta menyimpulkan amanat/pesan moral tentang bahaya sifat serakah.',
+                        svgType: 'salatiga_koda'
+                    }
+                ]
+            },
+            {
+                id: 'rawapening',
+                title: 'Legenda Rawa Pening',
+                subtitle: 'Baru Klinthing & Nyai Latung',
+                region: 'Kabupaten Semarang, Jawa Tengah',
+                emoji: '🐉',
+                colorTheme: 'from-emerald-500 to-teal-700',
+                badgeBg: 'bg-emerald-100 text-emerald-900',
+                summary: 'Kisah anak penjelmaan naga yang diusir warga Desa Pathok saat pesta panen, kecuali oleh seorang nenek tua yang berhati mulia.',
+                scenes: [
+                    {
+                        structure: 'Orientasi',
+                        paragraph: 'Pada zaman dahulu di lereng Gunung Telomoyo, terdapat sebuah desa makmur bernama Desa Pathok yang penduduknya sedang sibuk memasak hidangan lezat untuk pesta syukuran panen. Di tengah keramaian itu, datanglah seorang anak kecil bernama Baru Klinthing yang berwujud lusuh, penuh luka, dan sangat kelaparan setelah bertapa. Sayangnya, warga desa yang sombong justru menutup hidung dan mengusir Baru Klinthing dengan kasar dari halaman pesta.',
+                        poseTitle: 'Pose Pesta Desa & Anak Kelaparan',
+                        poseInstruction: '1 siswa membungkuk memegang perut dan mengulurkan tangan meminta makan, sementara anggota lainnya berpose sibuk mengaduk kuali masakan sambil membuang muka dengan angkuh.',
+                        roles: ['Baru Klinthing (Membungkuk Lapar)', 'Warga Desa (Mengaduk Kuali)', 'Warga Angkuh (Mengusir)'],
+                        explanation: 'Kutipan ini adalah ORIENTASI karena memperkenalkan latar Desa Pathok di lereng Gunung Telomoyo serta tokoh Baru Klinthing dan watak warga desa yang angkuh.',
+                        svgType: 'rawapening_orientasi'
+                    },
+                    {
+                        structure: 'Komplikasi',
+                        paragraph: 'Setelah ditolong dan diberi makan oleh seorang janda tua baik hati bernama Nyai Latung, Baru Klinthing kembali ke tengah lapangan desa membawa sebatang lidi kecil. Ia menancapkan lidi itu ke tanah lalu menantang warga desa yang sombong untuk mencabutnya. Satu per satu pemuda hingga pria terkuat di desa maju menarik lidi itu sekuat tenaga hingga bercucuran keringat, namun tak seorang pun mampu mencabutnya!',
+                        poseTitle: 'Pose Tantangan Mencabut Lidi Sakti',
+                        poseInstruction: '1 siswa berdiri tenang melipat tangan di dada (Baru Klinthing), sementara 3-4 siswa lainnya berbaris saling berpegangan pinggang seolah menarik sebatang lidi di lantai sekuat tenaga!',
+                        roles: ['Baru Klinthing (Melipat Tangan Tenang)', '3-4 Warga (Menarik Lidi Sekuat Tenaga)'],
+                        explanation: 'Kutipan ini adalah KOMPLIKASI karena menampilkan puncak ketegangan saat Baru Klinthing menantang warga Desa Pathok mencabut sebatang lidi yang tak tergoyahkan.',
+                        svgType: 'rawapening_komplikasi'
+                    },
+                    {
+                        structure: 'Resolusi',
+                        paragraph: 'Dengan sekali tarikan ringan, Baru Klinthing mencabut lidi tersebut dan seketika memancarlah semburan air bah yang amat deras dari dalam lubang tanah! Air terus meluap menenggelamkan seluruh Desa Pathok beserta warganya yang angkuh. Sesuai pesan Baru Klinthing sebelumnya, Nyai Latung segera memukul kentongan dan naik ke atas lesung kayu penumbuk padi sebagai perahu hingga ia berhasil selamat.',
+                        poseTitle: 'Pose Perahu Lesung & Semburan Air Bah',
+                        poseInstruction: '2 siswa duduk beriringan sambil memperagakan gerakan mendayung lesung kayu dan memukul kentongan, sementara siswa lain merentangkan tangan bergelombang seperti air bah besar.',
+                        roles: ['Nyai Latung (Mendayung Lesung)', 'Baru Klinthing (Menunjuk Arah)', 'Gelombang Air Bah'],
+                        explanation: 'Kutipan ini adalah RESOLUSI karena menjadi penyelesaian konflik di mana lidi dicabut, desa tenggelam menjadi danau, dan Nyai Latung selamat menaiki lesung kayu.',
+                        svgType: 'rawapening_resolusi'
+                    },
+                    {
+                        structure: 'Koda',
+                        paragraph: 'Genangan air yang sangat luas dan bening itu akhirnya membentuk sebuah danau indah yang diberi nama "Rawa Pening", yang berarti rawa berair bening di Kabupaten Semarang. Legenda ini mengajarkan kita semua agar tidak menilai seseorang dari penampilan luarnya saja, serta senantiasa gemar menolong sesama yang sedang kesusahan seperti keteladanan Nyai Latung.',
+                        poseTitle: 'Pose Berbagi Kasih di Tepi Rawa Pening',
+                        poseInstruction: 'Siswa berpose saling merangkul dan memperagakan gerakan memberi makanan kepada teman di sebelahnya dengan senyum tulus dan tangan di dada.',
+                        roles: ['Pemberi Bantuan (Ramah)', 'Penerima (Bersyukur)', 'Penjaga Danau Bening'],
+                        explanation: 'Kutipan ini adalah KODA karena menjelaskan asal-usul nama Danau Rawa Pening di akhir cerita sekaligus menyampaikan pesan moral tentang kepedulian sosial dan rendah hati.',
+                        svgType: 'rawapening_koda'
+                    }
+                ]
+            },
+            {
+                id: 'malinkundang',
+                title: 'Legenda Malin Kundang',
+                subtitle: 'Anak Rantau & Kapal Saudagar',
+                region: 'Sumatra Barat',
+                emoji: '⛵',
+                colorTheme: 'from-sky-600 to-blue-800',
+                badgeBg: 'bg-sky-100 text-sky-900',
+                summary: 'Kisah pemuda pesisir Pantai Air Manis yang merantau hingga sukses menjadi saudagar kaya namun mengingkari ibu kandungnya.',
+                scenes: [
+                    {
+                        structure: 'Orientasi',
+                        paragraph: 'Dahulu kala di sebuah perkampungan nelayan Pantai Air Manis, Sumatra Barat, hiduplah seorang janda tua bernama Mande Rubayah bersama putra semata wayangnya, Malin Kundang. Mereka hidup sederhana dengan bekerja memperbaiki jaring ikan setiap pagi di tepi pantai. Karena ingin mengubah nasib keluarga, Malin Kundang berpamitan dan mencium tangan ibunya untuk merantau menaiki kapal dagang besar.',
+                        poseTitle: 'Pose Nelayan Pantai & Pamit Merantau',
+                        poseInstruction: 'Sebagian siswa berpose menarik jaring ikan bersama-sama, sementara 1 siswa membungkuk mencium tangan siswa yang berperan sebagai Ibu sambil menunjuk ke arah laut lepas.',
+                        roles: ['Malin Muda (Pamit Hormat)', 'Mande Rubayah (Melambai Haru)', 'Nelayan Pantai (Menarik Jaring)'],
+                        explanation: 'Kutipan ini adalah ORIENTASI karena memaparkan latar tempat di Pantai Air Manis, Sumatra Barat, serta pengenalan tokoh Malin Kundang dan ibunya sebelum konflik dimulai.',
+                        svgType: 'malin_orientasi'
+                    },
+                    {
+                        structure: 'Komplikasi',
+                        paragraph: 'Bertahun-tahun kemudian, sebuah kapal megah berlabuh di Pantai Air Manis membawa Malin Kundang yang telah menjadi saudagar kaya raya bersama istrinya yang bangsawan. Mande Rubayah yang sangat rindu berlari tertatih-tatih mendekap Malin di dermaga. Namun, karena malu melihat pakaian ibunya yang compang-camping, Malin Kundang dengan kasar mendorong ibunya hingga terjatuh ke pasir dan membentak bahwa ia tidak mengenal wanita tua itu!',
+                        poseTitle: 'Pose Penolakan di Dermaga Kapal',
+                        poseInstruction: '1 siswa berlutut merentangkan tangan penuh rindu (Ibu), 1 siswa berdiri membuang muka dengan telapak tangan menolak di depan dada (Malin), dan siswa lain berekspresi terkejut.',
+                        roles: ['Mande Rubayah (Berlutut Rindu)', 'Malin Kaya (Menolak Angkuh)', 'Istri & Awak Kapal (Terkejut)'],
+                        explanation: 'Kutipan ini adalah KOMPLIKASI karena menampilkan puncak konflik batin dan fisik ketika Malin Kundang mengingkari serta mendorong ibu kandungnya sendiri di pelabuhan.',
+                        svgType: 'malin_komplikasi'
+                    },
+                    {
+                        structure: 'Resolusi',
+                        paragraph: 'Dengan hati yang hancur dan berlinang air mata, Mande Rubayah menengadah ke langit dan berdoa memohon keadilan kepada Tuhan. Seketika saat kapal Malin berlayar meninggalkan pantai, langit berubah gelap gulita disertai petir menyambar dan gelombang badai raksasa yang menghantam kapal Malin hingga hancur berkeping-keping. Tubuh Malin Kundang yang ketakutan terhempas ke tepi pantai dan perlahan-lahan mengeras menjadi batu!',
+                        poseTitle: 'Pose Badai Petir & Kutukan Menjadi Batu',
+                        poseInstruction: '1 siswa berlutut kaku mematung seperti batu dengan wajah menyesal, 1 siswa menunjuk tegas ke langit, dan siswa lainnya membentuk gelombang badai besar yang menerjang kapal.',
+                        roles: ['Malin (Mematung Jadi Batu)', 'Ibu (Menunjuk ke Langit)', 'Ombak Badai & Kapal Pecah'],
+                        explanation: 'Kutipan ini adalah RESOLUSI karena menyelesaikan konflik cerita melalui datangnya badai besar yang menghancurkan kapal dan mengubah Malin Kundang menjadi batu.',
+                        svgType: 'malin_resolusi'
+                    },
+                    {
+                        structure: 'Koda',
+                        paragraph: 'Hingga saat ini, di tepi Pantai Air Manis masih tampak bongkahan batu menyerupai sosok manusia yang sedang bersujud di antara pecahan kapal kayu. Kisah Malin Kundang menjadi pengingat abadi bagi setiap anak di Nusantara agar senantiasa berbakti, menghormati, dan menyayangi orang tua dalam keadaan apa pun, karena rida orang tua adalah kunci keselamatan hidup.',
+                        poseTitle: 'Pose Bakti & Hormat Orang Tua',
+                        poseInstruction: 'Seluruh siswa membentuk formasi setengah lingkaran yang harmonis, membungkuk hormat (sungkem) dan meletakkan kedua tangan di dada sebagai simbol anak yang berbakti.',
+                        roles: ['Anak Berbakti (Sungkem Hormat)', 'Orang Tua (Merangkul Kasih)'],
+                        explanation: 'Kutipan ini adalah KODA karena mengaitkan bukti peninggalan batu di Pantai Air Manis dengan amanat/pesan moral untuk selalu menghormati dan menyayangi orang tua.',
+                        svgType: 'malin_koda'
+                    }
+                ]
+            },
+            {
+                id: 'sangkuriang',
+                title: 'Tangkuban Perahu (Sangkuriang)',
+                subtitle: 'Dayang Sumbi & Perahu Raksasa',
+                region: 'Jawa Barat',
+                emoji: '⛰️',
+                colorTheme: 'from-indigo-600 to-purple-800',
+                badgeBg: 'bg-indigo-100 text-indigo-900',
+                summary: 'Kisah pengembara sakti Sangkuriang yang gagal menyelesaikan bendungan danau dan perahu besar sebelum fajar menyingsing.',
+                scenes: [
+                    {
+                        structure: 'Orientasi',
+                        paragraph: 'Pada zaman dahulu di tanah Parahyangan, Jawa Barat, hiduplah seorang putri cantik nan awet muda bernama Dayang Sumbi bersama putranya yang gemar berburu di hutan, Sangkuriang, serta anjing setianya yang bernama Tumang. Suatu hari ketika berburu di hutan belantara, Sangkuriang melakukan kesalahan fatal yang membuat Dayang Sumbi sangat murka hingga memukul kepala Sangkuriang dengan centong kayu dan mengusirnya pergi mengembara.',
+                        poseTitle: 'Pose Berburu di Hutan Parahyangan',
+                        poseInstruction: '1 siswa memasang pose menarik busur panah di hutan, 1 siswa memegang centong kayu imajiner dengan ekspresi tegas, dan siswa lain berpose sebagai pepohonan hutan dan Tumang.',
+                        roles: ['Sangkuriang (Menarik Panah)', 'Dayang Sumbi (Memegang Centong)', 'Penjaga Hutan Parahyangan'],
+                        explanation: 'Kutipan ini adalah ORIENTASI karena memperkenalkan tokoh Sangkuriang, Dayang Sumbi, dan Tumang beserta latar awal di hutan Parahyangan sebelum mereka berpisah.',
+                        svgType: 'sangkuriang_orientasi'
+                    },
+                    {
+                        structure: 'Komplikasi',
+                        paragraph: 'Setelah puluhan tahun mengembara dan memiliki kesaktian tinggi, Sangkuriang kembali ke kampung halamannya dan berniat menikahi Dayang Sumbi tanpa menyadari bahwa wanita itu adalah ibu kandungnya. Saat melihat bekas luka di dahi Sangkuriang, Dayang Sumbi terkejut ketakutan! Untuk menggagalkan pernikahan terlarang itu, ia mengajukan syarat mustahil: Sangkuriang harus membendung Sungai Citarum dan membuat perahu raksasa dalam waktu satu malam sebelum ayam berkokok.',
+                        poseTitle: 'Pose Luka di Dahi & Syarat Satu Malam',
+                        poseInstruction: '1 siswa memegang dahinya sambil terkejut mundur (Dayang Sumbi) lalu menunjuk ke arah lembah sungai, sementara 1 siswa berdiri gagah menyanggupi tantangan dibantu pasukan makhluk halus.',
+                        roles: ['Dayang Sumbi (Terkejut & Menunjuk)', 'Sangkuriang (Gagah Menyanggupi)', 'Pasukan Pembangun Bendungan'],
+                        explanation: 'Kutipan ini adalah KOMPLIKASI karena memuat puncak masalah ketika identitas Sangkuriang terungkap oleh Dayang Sumbi dan munculnya syarat mustahil dalam satu malam.',
+                        svgType: 'sangkuriang_komplikasi'
+                    },
+                    {
+                        structure: 'Resolusi',
+                        paragraph: 'Melihat perahu raksasa Sangkuriang hampir selesai berkat bantuan makhluk gaib, Dayang Sumbi berdoa sambil membentangkan kain selendang putih di ufuk timur dan membangunkan ayam-ayam warga agar berkokok. Mengira fajar telah tiba dan dirinya gagal memenuhi syarat, Sangkuriang murka luar biasa! Dengan seluruh tenaganya, ia menendang perahu kayu raksasa yang belum rampung itu hingga melayang dan jatuh dalam posisi terbalik.',
+                        poseTitle: 'Pose Tendangan Sakti Perahu Terbalik',
+                        poseInstruction: '1 siswa memasang pose menendang kuat dengan satu kaki terangkat, 1 siswa mengibaskan selendang di timur, dan 2-3 siswa saling berpegangan membentuk perahu raksasa yang terbalik!',
+                        roles: ['Sangkuriang (Menendang Kuat)', 'Dayang Sumbi (Mengibas Selendang)', '2-3 Siswa (Formasi Perahu Terbalik)'],
+                        explanation: 'Kutipan ini adalah RESOLUSI karena menyelesaikan konflik utama: siasat fajar buatan berhasil menggagalkan Sangkuriang hingga ia menendang perahunya sampai terbalik.',
+                        svgType: 'sangkuriang_resolusi'
+                    },
+                    {
+                        structure: 'Koda',
+                        paragraph: 'Perahu raksasa yang tertelungkup itu lama-kelamaan berubah menjadi sebuah gunung megah di utara Bandung yang diberi nama Gunung Tangkuban Perahu (berarti perahu terbalik). Kisah legenda ini memberikan pelajaran berharga agar manusia selalu bersikap jujur, mampu mengendalikan amarah saat menghadapi kegagalan, serta patuh terhadap nasihat orang tua.',
+                        poseTitle: 'Pose Siluet Gunung Tangkuban Perahu',
+                        poseInstruction: 'Seluruh siswa berbaris rapat saling menempelkan telapak tangan di atas kepala membentuk siluet gunung perahu terbalik yang kokoh sambil tersenyum tenang.',
+                        roles: ['Formasi Puncak Gunung Datar', 'Lereng Kanan & Kiri Gunung'],
+                        explanation: 'Kutipan ini adalah KODA karena menjelaskan asal-usul terbentuknya Gunung Tangkuban Perahu di Jawa Barat serta menyampaikan pesan moral tentang kejujuran dan pengendalian amarah.',
+                        svgType: 'sangkuriang_koda'
+                    }
+                ]
+            },
+            {
+                id: 'rorojonggrang',
+                title: 'Roro Jonggrang (Candi Prambanan)',
+                subtitle: 'Bandung Bondowoso & Seribu Candi',
+                region: 'Yogyakarta & Jawa Tengah',
+                emoji: '🛕',
+                colorTheme: 'from-rose-600 to-amber-700',
+                badgeBg: 'bg-rose-100 text-rose-900',
+                summary: 'Kisah pembangunan seribu candi dalam semalam oleh Bandung Bondowoso demi memenuhi syarat sang putri Kerajaan Prambanan.',
+                scenes: [
+                    {
+                        structure: 'Orientasi',
+                        paragraph: 'Dahulu kala di tanah Jawa, berdirilah dua kerajaan besar yang bertetangga, yaitu Kerajaan Pengging dan Kerajaan Baka. Setelah pertempuran besar, ksatria sakti dari Pengging bernama Bandung Bondowoso berhasil menguasai Istana Prambanan. Di dalam keraton yang megah itu, ia terpikat oleh kecantikan serta keanggunan Putri Roro Jonggrang, putri Raja Baka, lalu berniat meminangnya menjadi permaisuri.',
+                        poseTitle: 'Pose Lamaran Ksatria di Keraton Prambanan',
+                        poseInstruction: '1 siswa berdiri tegap dan gagah dengan satu tangan di dada (Bandung Bondowoso), 1 siswa berdiri anggun memegang dagu seolah berpikir mencari siasat (Roro Jonggrang), dan siswa lain menjadi dayang keraton.',
+                        roles: ['Bandung Bondowoso (Ksatria Gagah)', 'Roro Jonggrang (Putri Berpikir)', 'Dayang & Penjaga Istana'],
+                        explanation: 'Kutipan ini adalah ORIENTASI karena memperkenalkan latar Kerajaan Pengging dan Baka/Prambanan serta tokoh Bandung Bondowoso dan Putri Roro Jonggrang.',
+                        svgType: 'roro_orientasi'
+                    },
+                    {
+                        structure: 'Komplikasi',
+                        paragraph: 'Demi menolak lamaran secara halus, Roro Jonggrang mengajukan syarat agar dibuatkan seribu candi dan dua sumur dalam waktu satu malam saja. Tak disangka, Bandung Bondowoso mengerahkan pasukan jin yang bekerja sangat cepat mengangkat batu-batu besar hingga 999 candi hampir berdiri! Panik melihat hal itu, Roro Jonggrang diam-diam membangunkan gadis-gadis desa untuk menumbuk lesung padi dan membakar jerami di sisi timur agar tampak seperti cahaya pagi.',
+                        poseTitle: 'Pose Angkat Batu Candi vs Tumbuk Lesung',
+                        poseInstruction: 'Separuh anggota tim berpose mengangkat batu candi yang sangat berat di pundak, sementara separuh tim lainnya berpose menumbuk lesung padi dan mengipas api jerami dengan tergesa-gesa!',
+                        roles: ['Pembangun Candi (Angkat Batu)', 'Roro Jonggrang & Gadis Desa (Tumbuk Lesung)'],
+                        explanation: 'Kutipan ini adalah KOMPLIKASI karena menampilkan puncak ketegangan saat 999 candi hampir selesai dan Roro Jonggrang membuat suasana pagi palsu dengan menumbuk lesung.',
+                        svgType: 'roro_komplikasi'
+                    },
+                    {
+                        structure: 'Resolusi',
+                        paragraph: 'Mendengar suara lesung bertalu-talu dan kokok ayam diiringi cahaya merah di ufuk timur, pasukan makhluk halus ketakutan dan berlarian meninggalkan pekerjaan saat tinggal kurang satu candi lagi. Ketika Bandung Bondowoso mengetahui tipu muslihat Roro Jonggrang, ia sangat kecewa dan marah. Ia pun menunjuk ke arah sang putri sambil berucap bahwa Roro Jonggrang sendirilah yang akan menggenapkan jumlah arca batu yang keseribu!',
+                        poseTitle: 'Pose Arca Batu Keseribu',
+                        poseInstruction: '1 siswa menunjuk tegas dengan ekspresi kecewa (Bandung Bondowoso), 1 siswa mematung anggun dengan kedua tangan tertangkup seperti arca candi (Roro Jonggrang), dan siswa lain membentuk gapura candi.',
+                        roles: ['Roro Jonggrang (Mematung Jadi Arca)', 'Bandung Bondowoso (Menunjuk Tegas)', 'Gapura Candi Batu'],
+                        explanation: 'Kutipan ini adalah RESOLUSI karena merupakan penyelesaian dari puncak konflik di mana pembangunan candi terhenti di angka 999 dan Roro Jonggrang berubah menjadi arca penggenap.',
+                        svgType: 'roro_resolusi'
+                    },
+                    {
+                        structure: 'Koda',
+                        paragraph: 'Kompleks candi batu yang megah tersebut kini dikenal sebagai Candi Prambanan atau Candi Sewu (Seribu Candi) yang menjadi warisan budaya kebanggaan Indonesia di perbatasan Yogyakarta dan Jawa Tengah. Legenda ini mengajarkan pesan moral bahwa kita harus menepati janji yang telah terucap serta tidak menggunakan tipu daya untuk menyelesaikan suatu persoalan.',
+                        poseTitle: 'Pose Kemegahan Tiga Candi Prambanan',
+                        poseInstruction: 'Siswa berbaris membentuk siluet tiga candi menjulang (siswa paling tengah berdiri tinggi menjulang, diapit siswa kanan-kiri yang setengah berlutut) sambil mengacungkan jari kelingking tanda menepati janji!',
+                        roles: ['Candi Utama (Tengah Menjulang)', 'Candi Apit (Kanan-Kiri)', 'Simbol Jari Janji'],
+                        explanation: 'Kutipan ini adalah KODA karena menjelaskan peninggalan Candi Prambanan/Candi Sewu hingga masa kini sekaligus menyampaikan pesan moral tentang pentingnya menepati janji.',
+                        svgType: 'roro_koda'
+                    }
+                ]
+            }
+        ];
+
+        let currentLegend = null;
+        let roundSequence = []; // Array of scene objects (either shuffled or ordered)
+        let currentRoundIndex = 0;
+        let totalScore = 0;
+        let currentLegendScore = 0;
+        let currentLegendBonus = 0;
+        let roundAnswered = false;
+        let randomizeRounds = true; // Default: shuffle the 4 structures so students analyze the paragraph
+        let soundEnabled = true;
+
+        // Captured photos storage: keyed by structure name ('Orientasi', 'Komplikasi', 'Resolusi', 'Koda')
+        let capturedPhotos = {};
+
+        // Webcam & Motion Detection State
+        let webcamStream = null;
+        let cameraActive = false;
+        let motionSensorActive = true;
+        let prevFrameData = null;
+        let motionLoopId = null;
+        let isCountingDown = false;
+
+        // Corner dwell progress (0 to 100)
+        let zoneProgress = {
+            Orientasi: 0,
+            Komplikasi: 0,
+            Resolusi: 0,
+            Koda: 0
+        };
+
+        // Web Audio Context for energetic classroom sound effects
+        let audioCtx = null;
+        function initAudio() {
+            if (!audioCtx) {
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                if (AudioContextClass) audioCtx = new AudioContextClass();
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function playTone(freq, type = 'sine', duration = 0.15, delay = 0, vol = 0.15) {
+            if (!soundEnabled) return;
+            try {
+                initAudio();
+                if (!audioCtx) return;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime + delay);
+                gain.gain.setValueAtTime(vol, audioCtx.currentTime + delay);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + delay + duration);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(audioCtx.currentTime + delay);
+                osc.stop(audioCtx.currentTime + delay + duration);
+            } catch (e) {
+                // Ignore audio errors if blocked
+            }
+        }
+
+        function playSoundEffect(effectName) {
+            if (!soundEnabled) return;
+            if (effectName === 'correct') {
+                playTone(523.25, 'triangle', 0.14, 0, 0.2);
+                playTone(659.25, 'triangle', 0.14, 0.12, 0.2);
+                playTone(783.99, 'triangle', 0.18, 0.24, 0.22);
+                playTone(1046.50, 'triangle', 0.35, 0.36, 0.25);
+            } else if (effectName === 'wrong') {
+                playTone(240, 'sawtooth', 0.2, 0, 0.15);
+                playTone(180, 'sawtooth', 0.3, 0.18, 0.15);
+            } else if (effectName === 'tick') {
+                playTone(660, 'sine', 0.1, 0, 0.18);
+            } else if (effectName === 'shutter') {
+                playTone(1200, 'square', 0.08, 0, 0.2);
+                playTone(880, 'triangle', 0.25, 0.08, 0.25);
+            } else if (effectName === 'bonus') {
+                playTone(587.33, 'sine', 0.12, 0, 0.2);
+                playTone(880, 'sine', 0.28, 0.12, 0.25);
+            }
+        }
+
+        function getSceneSVG(svgType, structure) {
+            const bgColors = {
+                Orientasi: ['#E0F2FE', '#BAE6FD', '#0284C7'],
+                Komplikasi: ['#FFE4E6', '#FECDD3', '#E11D48'],
+                Resolusi: ['#D1FAE5', '#A7F3D0', '#059669'],
+                Koda: ['#F3E8FF', '#E9D5FF', '#7C3AED']
+            };
+            const palette = bgColors[structure] || bgColors.Orientasi;
+
+            // Specific thematic foreground graphics based on legend & structure
+            let foregroundArt = '';
+
+            if (svgType.startsWith('salatiga')) {
+                if (structure === 'Orientasi') {
+                    foregroundArt = `
+                        <!-- Pendopo Roof & Pillars -->
+                        <polygon points="40,95 160,35 280,95" fill="#92400E" stroke="#451A03" stroke-width="3"/>
+                        <rect x="65" y="95" width="12" height="85" fill="#78350F"/>
+                        <rect x="243" y="95" width="12" height="85" fill="#78350F"/>
+                        <!-- Treasure Chest -->
+                        <rect x="115" y="135" width="45" height="32" rx="4" fill="#F59E0B" stroke="#78350F" stroke-width="2.5"/>
+                        <circle cx="137" cy="150" r="5" fill="#FEF08A"/>
+                        <!-- Two Figures -->
+                        <circle cx="95" cy="120" r="14" fill="#FDE68A" stroke="#78350F" stroke-width="2"/>
+                        <path d="M78,175 Q95,135 112,175 Z" fill="#D97706"/>
+                        <circle cx="205" cy="122" r="13" fill="#FDE68A" stroke="#78350F" stroke-width="2"/>
+                        <path d="M190,175 Q205,138 220,175 Z" fill="#57534E"/>
+                        <line x1="224" y1="110" x2="224" y2="178" stroke="#78350F" stroke-width="4"/>
+                    `;
+                } else if (structure === 'Komplikasi') {
+                    foregroundArt = `
+                        <!-- Forest Trees -->
+                        <polygon points="35,170 65,65 95,170" fill="#15803D"/>
+                        <polygon points="235,170 265,60 295,170" fill="#166534"/>
+                        <!-- Golden Bamboo Staff -->
+                        <line x1="115" y1="80" x2="195" y2="160" stroke="#EAB308" stroke-width="9" stroke-linecap="round"/>
+                        <circle cx="155" cy="120" r="18" fill="none" stroke="#EF4444" stroke-width="3" stroke-dasharray="5,3"/>
+                        <!-- 3 Robbers Silhouettes -->
+                        <circle cx="110" cy="115" r="13" fill="#991B1B"/>
+                        <circle cx="160" cy="105" r="14" fill="#7F1D1D"/>
+                        <circle cx="205" cy="115" r="13" fill="#991B1B"/>
+                    `;
+                } else if (structure === 'Resolusi') {
+                    foregroundArt = `
+                        <!-- Sun Rays of Forgiveness -->
+                        <circle cx="160" cy="55" r="28" fill="#FDE047" opacity="0.85"/>
+                        <!-- Wise Figure Standing -->
+                        <circle cx="110" cy="105" r="14" fill="#FDE68A" stroke="#065F46" stroke-width="2"/>
+                        <path d="M90,175 Q110,122 130,175 Z" fill="#047857"/>
+                        <!-- Three Kneeling Figures -->
+                        <circle cx="170" cy="135" r="11" fill="#FDE68A"/>
+                        <path d="M156,178 Q170,148 184,178 Z" fill="#475569"/>
+                        <circle cx="205" cy="138" r="11" fill="#FDE68A"/>
+                        <path d="M191,178 Q205,150 219,178 Z" fill="#64748B"/>
+                        <circle cx="240" cy="140" r="11" fill="#FDE68A"/>
+                        <path d="M226,178 Q240,152 254,178 Z" fill="#475569"/>
+                    `;
+                } else {
+                    foregroundArt = `
+                        <!-- Salatiga Stone Monument -->
+                        <rect x="115" y="65" width="90" height="105" rx="12" fill="#E2E8F0" stroke="#475569" stroke-width="4"/>
+                        <rect x="95" y="165" width="130" height="16" rx="4" fill="#94A3B8"/>
+                        <text x="160" y="112" text-anchor="middle" font-family="Fredoka, sans-serif" font-weight="bold" font-size="15" fill="#1E293B">SALATIGA</text>
+                        <circle cx="138" cy="135" r="6" fill="#F59E0B"/>
+                        <circle cx="160" cy="135" r="6" fill="#F59E0B"/>
+                        <circle cx="182" cy="135" r="6" fill="#F59E0B"/>
+                    `;
+                }
+            } else if (svgType.startsWith('rawapening')) {
+                if (structure === 'Orientasi') {
+                    foregroundArt = `
+                        <!-- Telomoyo Mountain & Cooking Pot -->
+                        <polygon points="20,175 110,55 200,175" fill="#65A30D" opacity="0.5"/>
+                        <path d="M175,135 Q210,175 245,135 Z" fill="#334155" stroke="#1E293B" stroke-width="3"/>
+                        <path d="M190,165 L230,165" stroke="#EF4444" stroke-width="5" stroke-linecap="round"/>
+                        <!-- Little Baru Klinthing -->
+                        <circle cx="95" cy="130" r="12" fill="#FDE68A" stroke="#78350F" stroke-width="2"/>
+                        <path d="M82,175 Q95,144 108,175 Z" fill="#A16207"/>
+                    `;
+                } else if (structure === 'Komplikasi') {
+                    foregroundArt = `
+                        <!-- Sacred Lidi Stick in Ground -->
+                        <ellipse cx="160" cy="168" rx="85" ry="14" fill="#78350F"/>
+                        <line x1="160" y1="85" x2="160" y2="168" stroke="#FACC15" stroke-width="6" stroke-linecap="round"/>
+                        <circle cx="160" cy="85" r="16" fill="none" stroke="#F43F5E" stroke-width="2.5" stroke-dasharray="4,4"/>
+                        <!-- Energy Sparks -->
+                        <path d="M130,125 L148,135 M190,125 L172,135" stroke="#F43F5E" stroke-width="3" stroke-linecap="round"/>
+                    `;
+                } else if (structure === 'Resolusi') {
+                    foregroundArt = `
+                        <!-- Water Geyser & Lesung Boat -->
+                        <path d="M0,145 Q80,125 160,145 T320,145 L320,190 L0,190 Z" fill="#0284C7"/>
+                        <path d="M75,145 Q65,75 45,55 M75,145 Q85,70 105,55" fill="none" stroke="#38BDF8" stroke-width="6" stroke-linecap="round"/>
+                        <!-- Wooden Lesung Boat -->
+                        <polygon points="145,125 255,125 235,152 165,152" fill="#92400E" stroke="#451A03" stroke-width="2.5"/>
+                        <circle cx="185" cy="108" r="11" fill="#FDE68A"/>
+                        <circle cx="215" cy="112" r="9" fill="#FDE68A"/>
+                    `;
+                } else {
+                    foregroundArt = `
+                        <!-- Serene Rawa Pening Lake & Mountains -->
+                        <polygon points="30,140 115,55 200,140" fill="#059669"/>
+                        <polygon points="140,140 225,65 300,140" fill="#10B981"/>
+                        <rect x="0" y="138" width="320" height="52" fill="#38BDF8"/>
+                        <line x1="45" y1="155" x2="125" y2="155" stroke="#E0F2FE" stroke-width="3" stroke-linecap="round"/>
+                        <line x1="175" y1="168" x2="265" y2="168" stroke="#E0F2FE" stroke-width="3" stroke-linecap="round"/>
+                    `;
+                }
+            } else if (svgType.startsWith('malin')) {
+                if (structure === 'Orientasi') {
+                    foregroundArt = `
+                        <!-- Calm Beach & Sailboat -->
+                        <rect x="0" y="140" width="320" height="50" fill="#0284C7"/>
+                        <polygon points="210,135 275,135 260,152 225,152" fill="#78350F"/>
+                        <polygon points="242,70 242,132 275,125" fill="#F8FAFC"/>
+                        <!-- Mother & Son on Beach -->
+                        <circle cx="85" cy="118" r="12" fill="#FDE68A"/>
+                        <path d="M72,165 Q85,132 98,165 Z" fill="#0D9488"/>
+                        <circle cx="122" cy="122" r="11" fill="#FDE68A"/>
+                        <path d="M110,165 Q122,135 134,165 Z" fill="#475569"/>
+                    `;
+                } else if (structure === 'Komplikasi') {
+                    foregroundArt = `
+                        <!-- Grand Ship & Rejection -->
+                        <polygon points="30,115 155,115 135,155 45,155" fill="#78350F" stroke="#451A03" stroke-width="2"/>
+                        <polygon points="90,45 90,112 140,100" fill="#FEF08A"/>
+                        <!-- Rich Malin Turning Away & Kneeling Mother -->
+                        <circle cx="185" cy="105" r="13" fill="#FDE68A"/>
+                        <path d="M170,168 Q185,120 200,168 Z" fill="#E11D48"/>
+                        <circle cx="245" cy="135" r="12" fill="#FDE68A"/>
+                        <path d="M230,175 Q245,148 260,175 Z" fill="#64748B"/>
+                    `;
+                } else if (structure === 'Resolusi') {
+                    foregroundArt = `
+                        <!-- Lightning Storm & Turning to Stone -->
+                        <polyline points="85,20 65,65 92,68 68,118" fill="none" stroke="#FACC15" stroke-width="5" stroke-linejoin="round"/>
+                        <path d="M0,142 Q80,110 160,142 T320,142 L320,190 L0,190 Z" fill="#1E3A8A"/>
+                        <!-- Stone Statue of Malin -->
+                        <circle cx="195" cy="122" r="14" fill="#94A3B8" stroke="#475569" stroke-width="2.5"/>
+                        <polygon points="170,170 195,135 225,155 215,175" fill="#64748B" stroke="#334155" stroke-width="2.5"/>
+                    `;
+                } else {
+                    foregroundArt = `
+                        <!-- Sunrise over Air Manis Beach & Stone Relic -->
+                        <circle cx="245" cy="70" r="26" fill="#FBBF24"/>
+                        <rect x="0" y="148" width="320" height="42" fill="#0EA5E9"/>
+                        <ellipse cx="115" cy="152" rx="45" ry="22" fill="#64748B" stroke="#334155" stroke-width="2.5"/>
+                        <circle cx="95" cy="136" r="11" fill="#94A3B8" stroke="#334155" stroke-width="2"/>
+                    `;
+                }
+            } else if (svgType.startsWith('sangkuriang')) {
+                if (structure === 'Orientasi') {
+                    foregroundArt = `
+                        <!-- Parahyangan Forest & Bow -->
+                        <polygon points="45,175 85,55 125,175" fill="#15803D"/>
+                        <polygon points="205,175 245,65 285,175" fill="#166534"/>
+                        <!-- Hunter with Bow -->
+                        <circle cx="150" cy="115" r="13" fill="#FDE68A"/>
+                        <path d="M135,175 Q150,130 165,175 Z" fill="#4F46E5"/>
+                        <path d="M172,92 Q195,120 172,148" fill="none" stroke="#78350F" stroke-width="3.5"/>
+                        <line x1="162" y1="120" x2="195" y2="120" stroke="#F59E0B" stroke-width="2.5"/>
+                    `;
+                } else if (structure === 'Komplikasi') {
+                    foregroundArt = `
+                        <!-- Scar Revelation & Citarum Dam Challenge -->
+                        <circle cx="115" cy="110" r="22" fill="#FDE68A" stroke="#78350F" stroke-width="2"/>
+                        <!-- Scar on Forehead -->
+                        <path d="M110,96 L122,102 M120,95 L112,103" stroke="#DC2626" stroke-width="2.5"/>
+                        <circle cx="205" cy="112" r="20" fill="#FDE68A" stroke="#78350F" stroke-width="2"/>
+                        <text x="160" y="70" text-anchor="middle" font-weight="bold" font-size="22" fill="#E11D48">⚡ !</text>
+                    `;
+                } else if (structure === 'Resolusi') {
+                    foregroundArt = `
+                        <!-- Dawn Glow & Kicking the Giant Boat -->
+                        <circle cx="265" cy="65" r="28" fill="#FB7185"/>
+                        <!-- Tilted Giant Wooden Boat -->
+                        <g transform="rotate(-22 165 125)">
+                            <polygon points="90,110 240,110 215,150 115,150" fill="#78350F" stroke="#451A03" stroke-width="3"/>
+                        </g>
+                        <!-- Kick Impact Lines -->
+                        <path d="M75,135 L105,120 M70,150 L102,142" stroke="#F59E0B" stroke-width="4" stroke-linecap="round"/>
+                    `;
+                } else {
+                    foregroundArt = `
+                        <!-- Mount Tangkuban Perahu Overturned Boat Silhouette -->
+                        <polygon points="25,170 85,78 235,78 295,170" fill="#4338CA" stroke="#312E81" stroke-width="3"/>
+                        <path d="M85,78 Q160,92 235,78" fill="none" stroke="#818CF8" stroke-width="4"/>
+                        <rect x="0" y="168" width="320" height="22" fill="#10B981"/>
+                    `;
+                }
+            } else {
+                // Roro Jonggrang (Prambanan)
+                if (structure === 'Orientasi') {
+                    foregroundArt = `
+                        <!-- Prambanan Palace Archway -->
+                        <polygon points="120,170 120,75 160,40 200,75 200,170" fill="#CBD5E1" stroke="#475569" stroke-width="3"/>
+                        <circle cx="90" cy="118" r="13" fill="#FDE68A"/>
+                        <path d="M75,172 Q90,132 105,172 Z" fill="#B91C1C"/>
+                        <circle cx="230" cy="120" r="12" fill="#FDE68A"/>
+                        <path d="M216,172 Q230,134 244,172 Z" fill="#D97706"/>
+                    `;
+                } else if (structure === 'Komplikasi') {
+                    foregroundArt = `
+                        <!-- Night Sky, Temple Stones & Lesung Pounding -->
+                        <circle cx="55" cy="48" r="14" fill="#FEF08A"/>
+                        <!-- Stacked Temple Blocks -->
+                        <rect x="65" y="135" width="60" height="35" fill="#64748B" stroke="#334155" stroke-width="2"/>
+                        <rect x="75" y="105" width="40" height="30" fill="#94A3B8" stroke="#334155" stroke-width="2"/>
+                        <!-- Fire & Lesung on East Side -->
+                        <polygon points="210,165 255,165 245,142 220,142" fill="#92400E"/>
+                        <line x1="232" y1="95" x2="232" y2="148" stroke="#78350F" stroke-width="5" stroke-linecap="round"/>
+                        <path d="M268,165 Q280,115 292,165 Z" fill="#F97316"/>
+                    `;
+                } else if (structure === 'Resolusi') {
+                    foregroundArt = `
+                        <!-- 1000th Stone Statue inside Temple -->
+                        <polygon points="125,172 135,55 160,30 185,55 195,172" fill="#94A3B8" stroke="#334155" stroke-width="3"/>
+                        <circle cx="160" cy="108" r="12" fill="#CBD5E1" stroke="#475569" stroke-width="2"/>
+                        <path d="M146,165 Q160,122 174,165 Z" fill="#CBD5E1" stroke="#475569" stroke-width="2"/>
+                    `;
+                } else {
+                    foregroundArt = `
+                        <!-- Three Majestic Prambanan Temples -->
+                        <polygon points="65,172 80,85 95,65 110,85 125,172" fill="#64748B" stroke="#334155" stroke-width="2.5"/>
+                        <polygon points="125,172 142,55 160,25 178,55 195,172" fill="#475569" stroke="#1E293B" stroke-width="3"/>
+                        <polygon points="195,172 210,85 225,65 240,85 255,172" fill="#64748B" stroke="#334155" stroke-width="2.5"/>
+                    `;
+                }
+            }
+
+            return `
+                <svg viewBox="0 0 320 190" class="w-full h-full object-cover">
+                    <defs>
+                        <linearGradient id="skyGrad_${svgType}" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="${palette[0]}"/>
+                            <stop offset="100%" stop-color="${palette[1]}"/>
+                        </linearGradient>
+                    </defs>
+                    <rect width="320" height="190" fill="url(#skyGrad_${svgType})"/>
+                    <!-- Ground Horizon -->
+                    <rect x="0" y="165" width="320" height="25" fill="${palette[2]}" opacity="0.25"/>
+                    ${foregroundArt}
+                </svg>
+            `;
+        }
+
+        function renderLegendCards() {
+            const container = document.getElementById('legendCardsContainer');
+            container.innerHTML = LEGENDS_DATA.map((leg, idx) => `
+                <div onclick="selectLegend('${leg.id}')" class="cursor-pointer bg-white hover:bg-amber-50/90 border-4 border-amber-400 hover:border-orange-500 rounded-3xl p-4 shadow-lg hover:shadow-2xl transition-all transform hover:-translate-y-1.5 flex flex-col justify-between group">
+                    <div>
+                        <div class="flex items-center justify-between gap-2 mb-3">
+                            <span class="w-14 h-14 rounded-2xl bg-gradient-to-br ${leg.colorTheme} text-white text-3xl flex items-center justify-center shadow-md group-hover:scale-110 transition">
+                                ${leg.emoji}
+                            </span>
+                            <span class="text-[11px] font-extrabold px-2.5 py-1 rounded-full ${leg.badgeBg} uppercase tracking-wider">
+                                Legenda #${idx + 1}
+                            </span>
+                        </div>
+                        <div class="text-xs font-bold text-orange-600 uppercase tracking-wide mb-0.5">${leg.region}</div>
+                        <h4 class="font-display text-xl font-bold text-slate-900 group-hover:text-orange-700 transition leading-snug">
+                            ${leg.title}
+                        </h4>
+                        <div class="text-xs font-semibold text-slate-500 mb-2">${leg.subtitle}</div>
+                        <p class="text-xs text-slate-600 leading-relaxed line-clamp-3">
+                            ${leg.summary}
+                        </p>
+                    </div>
+
+                    <div class="mt-4 pt-3 border-t border-amber-100 flex items-center justify-between">
+                        <span class="text-xs font-extrabold text-amber-900">4 Babak Pose & Struktur</span>
+                        <span class="bg-amber-500 group-hover:bg-orange-600 text-white text-xs font-extrabold px-3 py-1.5 rounded-xl transition flex items-center gap-1">
+                            <span>Mulai</span>
+                            <span>▶️</span>
+                        </span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function shuffleArray(arr) {
+            const copy = [...arr];
+            for (let i = copy.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [copy[i], copy[j]] = [copy[j], copy[i]];
+            }
+            return copy;
+        }
+
+        function selectLegend(legendId) {
+            initAudio();
+            const found = LEGENDS_DATA.find(l => l.id === legendId);
+            if (!found) return;
+
+            currentLegend = found;
+            currentRoundIndex = 0;
+            currentLegendScore = 0;
+            currentLegendBonus = 0;
+            capturedPhotos = {};
+
+            // Prepare 4 rounds sequence (shuffled or story order)
+            roundSequence = randomizeRounds ? shuffleArray(found.scenes) : [...found.scenes];
+
+            // Switch Views
+            document.getElementById('viewMenu').classList.add('hidden');
+            document.getElementById('viewGallery').classList.add('hidden');
+            document.getElementById('viewGame').classList.remove('hidden');
+            document.getElementById('btnBackMenu').classList.remove('hidden');
+
+            // Populate Top Legend Header
+            document.getElementById('activeLegendEmoji').textContent = found.emoji;
+            document.getElementById('activeLegendRegion').textContent = found.region;
+            document.getElementById('activeLegendTitle').textContent = found.title;
+
+            // Start Camera & Motion Loop if not already running
+            startWebcamAndMotion();
+
+            // Load Round 1
+            loadRound(0);
+            showToast(`Memulai petualangan: ${found.title}!`, 'amber');
+        }
+
+        function loadRound(index) {
+            currentRoundIndex = index;
+            roundAnswered = false;
+            resetZoneProgress();
+
+            const scene = roundSequence[index];
+            document.getElementById('badgeRoundNum').textContent = `Babak ${index + 1} / 4`;
+            document.getElementById('storyParagraphText').textContent = `"${scene.paragraph}"`;
+            document.getElementById('scenePoseTitle').textContent = scene.poseTitle;
+            document.getElementById('scenePoseInstruction').textContent = scene.poseInstruction;
+
+            // Render Role Badges
+            const rolesContainer = document.getElementById('poseRolesBadges');
+            rolesContainer.innerHTML = scene.roles.map(role => `
+                <span class="bg-amber-200/80 text-amber-950 text-[11px] font-bold px-2.5 py-0.5 rounded-lg border border-amber-400">
+                    🎭 ${role}
+                </span>
+            `).join('');
+
+            // Render SVG Scene Illustration
+            document.getElementById('svgSceneContainer').innerHTML = getSceneSVG(scene.svgType, scene.structure);
+
+            // Reset Answer Feedback & Next Button
+            const feedbackBox = document.getElementById('answerFeedbackBox');
+            feedbackBox.classList.add('hidden');
+            feedbackBox.innerHTML = '';
+            document.getElementById('btnNextRound').classList.add('hidden');
+
+            // Reset 4 Structure Buttons state
+            const structures = ['Orientasi', 'Komplikasi', 'Resolusi', 'Koda'];
+            structures.forEach(st => {
+                const btn = document.getElementById(`btnAns_${st}`);
+                if (btn) {
+                    btn.disabled = false;
+                    btn.classList.remove('opacity-40', 'ring-4', 'ring-amber-300', 'scale-105');
+                }
+            });
+
+            // Update Mini Photo Preview for this round
+            updateMiniPhotoPreview(scene.structure);
+
+            // Update Round Step Indicators
+            renderRoundIndicators();
+
+            // Redraw fallback stage if camera is off
+            if (!cameraActive) {
+                drawFallbackStage();
+            }
+        }
+
+        function renderRoundIndicators() {
+            const container = document.getElementById('roundIndicators');
+            let html = '';
+            for (let i = 0; i < 4; i++) {
+                const isCurrent = i === currentRoundIndex;
+                const isDone = i < currentRoundIndex || (i === currentRoundIndex && roundAnswered);
+                let bgClass = 'bg-slate-200 text-slate-600 border-slate-300';
+                if (isCurrent) bgClass = 'bg-amber-500 text-white border-amber-700 scale-110 shadow';
+                else if (isDone) bgClass = 'bg-emerald-500 text-white border-emerald-700';
+
+                html += `
+                    <div class="w-8 h-8 rounded-xl border-2 font-display font-bold text-sm flex items-center justify-center transition ${bgClass}">
+                        ${isDone && !isCurrent ? '✓' : (i + 1)}
+                    </div>
+                `;
+            }
+            container.innerHTML = html;
+        }
+
+        function submitStructureAnswer(selectedStructure, viaMotion = false) {
+            if (roundAnswered) return;
+
+            const currentScene = roundSequence[currentRoundIndex];
+            const isCorrect = selectedStructure === currentScene.structure;
+            const feedbackBox = document.getElementById('answerFeedbackBox');
+            feedbackBox.classList.remove('hidden');
+
+            const sourceTag = viaMotion ? '👋 (Dijawab lewat Sensor Gerak Kamera!)' : '👆 (Dijawab lewat Tombol Layar)';
+
+            if (isCorrect) {
+                roundAnswered = true;
+                resetZoneProgress();
+                playSoundEffect('correct');
+
+                // Award +25 Points
+                totalScore += 25;
+                currentLegendScore += 25;
+                updateScoreDisplay();
+
+                // Highlight Correct Button
+                ['Orientasi', 'Komplikasi', 'Resolusi', 'Koda'].forEach(st => {
+                    const btn = document.getElementById(`btnAns_${st}`);
+                    if (st === selectedStructure) {
+                        btn.classList.add('ring-4', 'ring-amber-300', 'scale-105');
+                    } else {
+                        btn.classList.add('opacity-40');
+                        btn.disabled = true;
+                    }
+                });
+
+                feedbackBox.className = 'rounded-2xl p-4 border-2 bg-emerald-50 border-emerald-500 text-emerald-950 shadow-md';
+                feedbackBox.innerHTML = `
+                    <div class="flex items-start gap-3">
+                        <div class="text-3xl">✅</div>
+                        <div class="space-y-1">
+                            <div class="flex flex-wrap items-center gap-2">
+                                <span class="font-display font-bold text-lg text-emerald-900">TEPAT SEKALI! Itu adalah ${currentScene.structure.toUpperCase()} (+25 Poin)</span>
+                                <span class="text-xs font-bold bg-emerald-200 text-emerald-900 px-2.5 py-0.5 rounded-full">${sourceTag}</span>
+                            </div>
+                            <p class="text-xs md:text-sm text-emerald-900 leading-relaxed font-medium">
+                                <strong>Mengapa ${currentScene.structure}?</strong> ${currentScene.explanation}
+                            </p>
+                        </div>
+                    </div>
+                `;
+
+                // Show Next Round / Finish Button
+                const btnNext = document.getElementById('btnNextRound');
+                const nextText = document.getElementById('nextRoundText');
+                btnNext.classList.remove('hidden');
+                nextText.textContent = currentRoundIndex < 3 ? 'Babak Berikutnya' : 'Lihat Galeri Foto & Skor';
+                renderRoundIndicators();
+                showToast(`Benar! Struktur ${currentScene.structure} (+25 Poin)`, 'emerald');
+            } else {
+                playSoundEffect('wrong');
+                resetZoneProgress();
+
+                // Dim the wrong button briefly so they can try again and learn
+                const wrongBtn = document.getElementById(`btnAns_${selectedStructure}`);
+                if (wrongBtn) {
+                    wrongBtn.classList.add('opacity-40');
+                    wrongBtn.disabled = true;
+                }
+
+                const hints = {
+                    Orientasi: 'Perhatikan apakah paragraf ini baru memperkenalkan tokoh dan latar tempat awal.',
+                    Komplikasi: 'Perhatikan adanya pertentangan, masalah genting, atau puncak konflik yang menegangkan.',
+                    Resolusi: 'Perhatikan bagaimana puncak masalah akhirnya terpecahkan atau berakhir.',
+                    Koda: 'Perhatikan bagian penutup yang menjelaskan asal-usul nama tempat serta amanat/pesan moral cerita.'
+                };
+
+                feedbackBox.className = 'rounded-2xl p-4 border-2 bg-amber-100 border-amber-500 text-amber-950';
+                feedbackBox.innerHTML = `
+                    <div class="flex items-start gap-3">
+                        <div class="text-2xl">💡</div>
+                        <div>
+                            <div class="font-display font-bold text-base text-rose-700">
+                                Belum Tepat! Kutipan ini bukan bagian ${selectedStructure}. ${sourceTag}
+                            </div>
+                            <p class="text-xs md:text-sm text-amber-900 mt-0.5">
+                                <strong>Petunjuk Analisis:</strong> ${hints[currentScene.structure]} Ayo diskusikan lagi bersama kelompokmu!
+                            </p>
+                        </div>
+                    </div>
+                `;
+                showToast(`Kurang tepat (${selectedStructure}). Coba analisis petunjuknya!`, 'rose');
+            }
+        }
+
+        function awardTeacherPoseBonus() {
+            initAudio();
+            playSoundEffect('bonus');
+            totalScore += 10;
+            currentLegendBonus += 10;
+            updateScoreDisplay();
+            showToast('🌟 +10 Poin Bonus Ekspresi Pose diberikan oleh Guru!', 'pink');
+        }
+
+        function updateScoreDisplay() {
+            const el = document.getElementById('headerScore');
+            el.textContent = totalScore;
+            el.classList.add('scale-125');
+            setTimeout(() => el.classList.remove('scale-125'), 200);
+        }
+
+        function goToNextRound() {
+            if (currentRoundIndex < 3) {
+                loadRound(currentRoundIndex + 1);
+            } else {
+                openGalleryView();
+            }
+        }
+
+        async function startWebcamAndMotion() {
+            const video = document.getElementById('webcamVideo');
+            const fallbackCanvas = document.getElementById('fallbackStageCanvas');
+
+            if (!webcamStream) {
+                try {
+                    webcamStream = await navigator.mediaDevices.getUserMedia({
+                        video: { width: { ideal: 640 }, height: { ideal: 360 }, facingMode: 'user' },
+                        audio: false
+                    });
+                    video.srcObject = webcamStream;
+                    await video.play();
+                    cameraActive = true;
+                    video.classList.remove('hidden');
+                    fallbackCanvas.classList.add('hidden');
+                    updateCameraUIState(true);
+                } catch (err) {
+                    // Fallback to interactive simulated stage if no camera or permission denied
+                    cameraActive = false;
+                    video.classList.add('hidden');
+                    fallbackCanvas.classList.remove('hidden');
+                    updateCameraUIState(false);
+                    drawFallbackStage();
+                }
+            }
+
+            if (!motionLoopId) {
+                motionLoopId = requestAnimationFrame(processMotionFrame);
+            }
+        }
+
+        function updateCameraUIState(isLive) {
+            const dot = document.getElementById('camStatusDot');
+            const btnText = document.getElementById('camToggleText');
+            const hint = document.getElementById('cameraOverlayHint');
+
+            if (isLive) {
+                dot.className = 'w-3 h-3 rounded-full bg-emerald-400 animate-ping';
+                btnText.textContent = 'Matikan Kamera';
+                hint.textContent = '👋 Lambaikan tangan di salah satu sudut untuk menjawab, atau berpose di tengah layar!';
+            } else {
+                dot.className = 'w-3 h-3 rounded-full bg-amber-400';
+                btnText.textContent = 'Aktifkan Kamera';
+                hint.textContent = '🎨 Mode Panggung Ilustrasi Aktif (Kamera dimatikan / tidak terdeteksi). Klik sudut layar atau tombol untuk menjawab!';
+            }
+        }
+
+        function toggleCameraStream() {
+            const video = document.getElementById('webcamVideo');
+            const fallbackCanvas = document.getElementById('fallbackStageCanvas');
+
+            if (cameraActive && webcamStream) {
+                webcamStream.getTracks().forEach(track => track.stop());
+                webcamStream = null;
+                cameraActive = false;
+                video.classList.add('hidden');
+                fallbackCanvas.classList.remove('hidden');
+                updateCameraUIState(false);
+                drawFallbackStage();
+                showToast('Kamera dimatikan. Mode Panggung Ilustrasi diaktifkan.', 'amber');
+            } else {
+                startWebcamAndMotion();
+            }
+        }
+
+        function toggleMotionSensor() {
+            motionSensorActive = !motionSensorActive;
+            resetZoneProgress();
+            const btn = document.getElementById('btnToggleMotion');
+            const txt = document.getElementById('motionStatusText');
+            const overlay = document.getElementById('motionZonesOverlay');
+
+            if (motionSensorActive) {
+                btn.className = 'bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold px-3 py-1.5 rounded-xl border border-emerald-300 flex items-center gap-1.5 transition';
+                txt.textContent = 'Sensor Gerak: AKTIF';
+                overlay.classList.remove('opacity-30');
+                showToast('Sensor Gerak 4 Sudut Kamera DIAKTIFKAN!', 'emerald');
+            } else {
+                btn.className = 'bg-slate-700 hover:bg-slate-600 text-slate-300 text-xs font-extrabold px-3 py-1.5 rounded-xl border border-slate-500 flex items-center gap-1.5 transition';
+                txt.textContent = 'Sensor Gerak: NONAKTIF';
+                overlay.classList.add('opacity-30');
+                showToast('Sensor Gerak dinonaktifkan sementara agar siswa bebas berpose.', 'amber');
+            }
+        }
+
+        function resetZoneProgress() {
+            ['Orientasi', 'Komplikasi', 'Resolusi', 'Koda'].forEach(st => {
+                zoneProgress[st] = 0;
+                const bar = document.getElementById(`bar_${st}`);
+                const pct = document.getElementById(`pct_${st}`);
+                const box = document.getElementById(`zone_${st}`);
+                if (bar) bar.style.width = '0%';
+                if (pct) pct.textContent = '0%';
+                if (box) box.classList.remove('zone-active', 'ring-4', 'ring-white');
+            });
+        }
+
+        function processMotionFrame() {
+            const video = document.getElementById('webcamVideo');
+            const procCanvas = document.getElementById('motionProcCanvas');
+            const ctx = procCanvas.getContext('2d', { willReadFrequently: true });
+
+            if (cameraActive && motionSensorActive && !roundAnswered && !isCountingDown && video.readyState >= 2) {
+                const w = procCanvas.width;  // 160
+                const h = procCanvas.height; // 120
+
+                // Draw mirrored video frame onto small 160x120 processing canvas
+                ctx.save();
+                ctx.scale(-1, 1);
+                ctx.drawImage(video, -w, 0, w, h);
+                ctx.restore();
+
+                const currentFrame = ctx.getImageData(0, 0, w, h).data;
+
+                if (prevFrameData) {
+                    // Define 4 corner bounding boxes on 160x120 canvas
+                    const boxW = 48;
+                    const boxH = 38;
+                    const zones = {
+                        Orientasi:  { x0: 0,        y0: 0,        x1: boxW, y1: boxH },
+                        Komplikasi: { x0: w - boxW, y0: 0,        x1: w,    y1: boxH },
+                        Resolusi:   { x0: 0,        y0: h - boxH, x1: boxW, y1: h },
+                        Koda:       { x0: w - boxW, y0: h - boxH, x1: w,    y1: h }
+                    };
+
+                    for (const [stName, rect] of Object.entries(zones)) {
+                        const btn = document.getElementById(`btnAns_${stName}`);
+                        if (btn && btn.disabled) continue;
+
+                        let changedPixels = 0;
+                        const totalPixels = boxW * boxH;
+
+                        for (let y = rect.y0; y < rect.y1; y += 2) {
+                            for (let x = rect.x0; x < rect.x1; x += 2) {
+                                const idx = (y * w + x) * 4;
+                                const diffR = Math.abs(currentFrame[idx] - prevFrameData[idx]);
+                                const diffG = Math.abs(currentFrame[idx + 1] - prevFrameData[idx + 1]);
+                                const diffB = Math.abs(currentFrame[idx + 2] - prevFrameData[idx + 2]);
+                                if (diffR + diffG + diffB > 85) {
+                                    changedPixels++;
+                                }
+                            }
+                        }
+
+                        const sampledTotal = totalPixels / 4;
+                        const activityRatio = changedPixels / sampledTotal;
+
+                        if (activityRatio > 0.14) {
+                            zoneProgress[stName] = Math.min(100, zoneProgress[stName] + 9);
+                        } else {
+                            zoneProgress[stName] = Math.max(0, zoneProgress[stName] - 4);
+                        }
+
+                        // Update Corner UI Bar
+                        const pctVal = Math.round(zoneProgress[stName]);
+                        const barEl = document.getElementById(`bar_${stName}`);
+                        const pctEl = document.getElementById(`pct_${stName}`);
+                        const boxEl = document.getElementById(`zone_${stName}`);
+
+                        if (barEl) barEl.style.width = `${pctVal}%`;
+                        if (pctEl) pctEl.textContent = `${pctVal}%`;
+
+                        if (pctVal > 35) {
+                            boxEl.classList.add('zone-active', 'ring-4', 'ring-white');
+                        } else {
+                            boxEl.classList.remove('zone-active', 'ring-4', 'ring-white');
+                        }
+
+                        if (pctVal >= 100) {
+                            submitStructureAnswer(stName, true);
+                            break;
+                        }
+                    }
+                }
+
+                prevFrameData = new Uint8ClampedArray(currentFrame);
+            }
+
+            motionLoopId = requestAnimationFrame(processMotionFrame);
+        }
+
+        function startPoseCountdown() {
+            if (isCountingDown) return;
+            initAudio();
+            isCountingDown = true;
+
+            const overlay = document.getElementById('countdownOverlay');
+            const numEl = document.getElementById('countdownNumber');
+            const btnCapture = document.getElementById('btnCapturePose');
+
+            overlay.classList.remove('hidden');
+            btnCapture.disabled = true;
+
+            let count = 5;
+            numEl.textContent = count;
+            playSoundEffect('tick');
+
+            const timer = setInterval(() => {
+                count--;
+                if (count > 0) {
+                    numEl.textContent = count;
+                    playSoundEffect('tick');
+                } else if (count === 0) {
+                    numEl.textContent = 'FREEZE! 📸';
+                    playSoundEffect('shutter');
+                    captureCurrentPoseFrame();
+                } else {
+                    clearInterval(timer);
+                    overlay.classList.add('hidden');
+                    btnCapture.disabled = false;
+                    isCountingDown = false;
+                }
+            }, 950);
+        }
+
+        function captureCurrentPoseFrame() {
+            const flash = document.getElementById('shutterFlashOverlay');
+            flash.classList.remove('hidden');
+            flash.classList.add('shutter-flash');
+            setTimeout(() => {
+                flash.classList.add('hidden');
+                flash.classList.remove('shutter-flash');
+            }, 650);
+
+            const currentScene = roundSequence[currentRoundIndex];
+            const snapCanvas = document.createElement('canvas');
+            snapCanvas.width = 640;
+            snapCanvas.height = 360;
+            const ctx = snapCanvas.getContext('2d');
+
+            const video = document.getElementById('webcamVideo');
+            const fallbackCanvas = document.getElementById('fallbackStageCanvas');
+
+            if (cameraActive && video.readyState >= 2) {
+                // Draw mirrored webcam frame
+                ctx.save();
+                ctx.scale(-1, 1);
+                ctx.drawImage(video, -640, 0, 640, 360);
+                ctx.restore();
+            } else {
+                drawFallbackStage();
+                ctx.drawImage(fallbackCanvas, 0, 0, 640, 360);
+            }
+
+            // Add decorative Nusantara Frame Banner on bottom of captured photo
+            ctx.fillStyle = 'rgba(15, 23, 42, 0.82)';
+            ctx.fillRect(0, 302, 640, 58);
+            ctx.fillStyle = '#F59E0B';
+            ctx.fillRect(0, 300, 640, 4);
+
+            ctx.font = 'bold 18px Fredoka, sans-serif';
+            ctx.fillStyle = '#FDE047';
+            ctx.fillText(`${currentLegend.title} — [${currentScene.structure.toUpperCase()}]`, 16, 326);
+
+            ctx.font = '600 13px Plus Jakarta Sans, sans-serif';
+            ctx.fillStyle = '#F8FAFC';
+            ctx.fillText(`Pose: ${currentScene.poseTitle}`, 16, 347);
+
+            const dataUrl = snapCanvas.toDataURL('image/png');
+            capturedPhotos[currentScene.structure] = {
+                dataUrl,
+                poseTitle: currentScene.poseTitle,
+                structure: currentScene.structure
+            };
+
+            updateMiniPhotoPreview(currentScene.structure);
+            showToast(`📸 Pose "${currentScene.poseTitle}" berhasil disimpan ke Galeri!`, 'amber');
+        }
+
+        function updateMiniPhotoPreview(structureName) {
+            const box = document.getElementById('miniPhotoPreviewBox');
+            const title = document.getElementById('miniPhotoStatusTitle');
+            const desc = document.getElementById('miniPhotoStatusDesc');
+
+            const saved = capturedPhotos[structureName];
+            if (saved) {
+                box.innerHTML = `<img src="${saved.dataUrl}" alt="Pose ${structureName}" class="w-full h-full object-cover"/>`;
+                title.textContent = '✅ Pose Tersimpan!';
+                desc.textContent = 'Klik tombol lagi jika ingin memotret ulang.';
+            } else {
+                box.innerHTML = `<span class="text-[11px] text-slate-400 text-center px-1">Belum Difoto</span>`;
+                title.textContent = 'Foto Babak Ini:';
+                desc.textContent = 'Klik tombol kamera untuk memotret pose kelompok!';
+            }
+        }
+
+        function drawFallbackStage() {
+            const canvas = document.getElementById('fallbackStageCanvas');
+            if (!canvas || !currentLegend) return;
+            const ctx = canvas.getContext('2d');
+            const scene = roundSequence[currentRoundIndex] || currentLegend.scenes[0];
+
+            // Gradient background
+            const grad = ctx.createLinearGradient(0, 0, 640, 360);
+            grad.addColorStop(0, '#1E293B');
+            grad.addColorStop(1, '#0F172A');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, 640, 360);
+
+            // Stage curtains & floor
+            ctx.fillStyle = '#78350F';
+            ctx.fillRect(0, 290, 640, 70);
+
+            // Stylized Student Silhouettes Posing on Stage
+            const silhouettes = [190, 280, 360, 450];
+            silhouettes.forEach((x, idx) => {
+                ctx.fillStyle = ['#38BDF8', '#FB7185', '#34D399', '#FBBF24'][idx % 4];
+                ctx.beginPath();
+                ctx.arc(x, 175 - (idx % 2) * 12, 22, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.roundRect(x - 26, 202 - (idx % 2) * 10, 52, 88, 14);
+                ctx.fill();
+            });
+
+            ctx.fillStyle = '#FDE047';
+            ctx.font = 'bold 20px Fredoka, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(`Panggung Pose Kelas: ${scene.poseTitle}`, 320, 95);
+            ctx.textAlign = 'left';
+        }
+
+        function openGalleryView() {
+            document.getElementById('viewGame').classList.add('hidden');
+            document.getElementById('viewGallery').classList.remove('hidden');
+
+            document.getElementById('galleryLegendTitle').textContent = `Galeri Pose: ${currentLegend.title}`;
+            document.getElementById('galleryFinalScore').textContent = currentLegendScore + currentLegendBonus;
+            document.getElementById('galleryScoreBreakdown').textContent = `Analisis Struktur: ${currentLegendScore} Poin | Bonus Ekspresi Pose: ${currentLegendBonus} Poin`;
+
+            // Always display in canonical structure order: Orientasi -> Komplikasi -> Resolusi -> Koda
+            const orderedScenes = currentLegend.scenes;
+            const badgeStyles = {
+                Orientasi: 'bg-sky-500 text-white',
+                Komplikasi: 'bg-rose-500 text-white',
+                Resolusi: 'bg-emerald-500 text-white',
+                Koda: 'bg-purple-600 text-white'
+            };
+
+            const grid = document.getElementById('galleryPhotosGrid');
+            grid.innerHTML = orderedScenes.map((sc, idx) => {
+                const photoObj = capturedPhotos[sc.structure];
+                const mediaHtml = photoObj
+                    ? `<img src="${photoObj.dataUrl}" alt="${sc.structure}" class="w-full h-44 object-cover"/>`
+                    : `<div class="w-full h-44 flex flex-col items-center justify-center bg-slate-100 relative overflow-hidden">
+                         ${getSceneSVG(sc.svgType, sc.structure)}
+                         <span class="absolute bottom-2 right-2 bg-slate-900/75 text-white text-[10px] font-bold px-2 py-0.5 rounded">Ilustrasi Adegan</span>
+                       </div>`;
+
+                return `
+                    <div class="bg-amber-50/70 border-2 border-amber-300 rounded-2xl overflow-hidden shadow-md flex flex-col justify-between">
+                        <div>
+                            <div class="px-3.5 py-2 flex items-center justify-between ${badgeStyles[sc.structure]}">
+                                <span class="font-display font-bold text-base">${idx + 1}. ${sc.structure}</span>
+                                <span class="text-xs font-extrabold bg-black/20 px-2 py-0.5 rounded-full">
+                                    ${photoObj ? '📸 Foto Siswa' : '🎨 Ilustrasi'}
+                                </span>
+                            </div>
+                            ${mediaHtml}
+                            <div class="p-3.5 space-y-1.5">
+                                <h4 class="font-display font-bold text-slate-900 text-base">${sc.poseTitle}</h4>
+                                <p class="text-xs text-slate-600 line-clamp-3 leading-relaxed">"${sc.paragraph}"</p>
+                            </div>
+                        </div>
+                        <div class="px-3.5 py-2 bg-amber-100/80 border-t border-amber-200 text-[11px] font-semibold text-amber-950">
+                            ${sc.explanation}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function downloadCompositePoster() {
+            if (!currentLegend) return;
+            const poster = document.createElement('canvas');
+            poster.width = 1280;
+            poster.height = 900;
+            const ctx = poster.getContext('2d');
+
+            // Poster Background
+            ctx.fillStyle = '#FFFBEB';
+            ctx.fillRect(0, 0, 1280, 900);
+
+            // Header Banner
+            ctx.fillStyle = '#B45309';
+            ctx.fillRect(0, 0, 1280, 115);
+            ctx.fillStyle = '#FFFFFF';
+            ctx.font = 'bold 34px Fredoka, sans-serif';
+            ctx.fillText(`DOKUMENTASI POSE & STRUKTUR LEGENDA: ${currentLegend.title.toUpperCase()}`, 40, 58);
+            ctx.font = '600 20px Plus Jakarta Sans, sans-serif';
+            ctx.fillStyle = '#FDE68A';
+            ctx.fillText(`Skor Kelompok: ${currentLegendScore + currentLegendBonus} Poin (Struktur: ${currentLegendScore} | Bonus Pose: ${currentLegendBonus})`, 40, 92);
+
+            const coords = [
+                { x: 40, y: 140 },
+                { x: 650, y: 140 },
+                { x: 40, y: 515 },
+                { x: 650, y: 515 }
+            ];
+
+            const structures = ['Orientasi', 'Komplikasi', 'Resolusi', 'Koda'];
+            let loadedCount = 0;
+
+            structures.forEach((st, i) => {
+                const pos = coords[i];
+                const sc = currentLegend.scenes.find(s => s.structure === st);
+                const photoObj = capturedPhotos[st];
+
+                ctx.fillStyle = '#FFFFFF';
+                ctx.strokeStyle = '#F59E0B';
+                ctx.lineWidth = 4;
+                ctx.strokeRect(pos.x, pos.y, 590, 345);
+                ctx.fillRect(pos.x, pos.y, 590, 345);
+
+                if (photoObj) {
+                    const img = new Image();
+                    img.onload = () => {
+                        ctx.drawImage(img, pos.x + 10, pos.y + 10, 570, 325);
+                        loadedCount++;
+                        if (loadedCount === structures.length) triggerPosterDownload(poster);
+                    };
+                    img.src = photoObj.dataUrl;
+                } else {
+                    ctx.fillStyle = '#1E293B';
+                    ctx.fillRect(pos.x + 10, pos.y + 10, 570, 325);
+                    ctx.fillStyle = '#FDE047';
+                    ctx.font = 'bold 26px Fredoka, sans-serif';
+                    ctx.fillText(`${i + 1}. STRUKTUR: ${st.toUpperCase()}`, pos.x + 35, pos.y + 80);
+                    ctx.fillStyle = '#FFFFFF';
+                    ctx.font = 'bold 20px Plus Jakarta Sans, sans-serif';
+                    ctx.fillText(sc.poseTitle, pos.x + 35, pos.y + 125);
+                    loadedCount++;
+                    if (loadedCount === structures.length) triggerPosterDownload(poster);
+                }
+            });
+        }
+
+        function triggerPosterDownload(canvas) {
+            const link = document.createElement('a');
+            link.download = `Poster_Pose_${currentLegend.id}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            showToast('Poster Kolase 4 Pose berhasil diunduh!', 'emerald');
+        }
+
+        function replaySameLegend() {
+            if (currentLegend) selectLegend(currentLegend.id);
+        }
+
+        function returnToMainMenu() {
+            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+            document.getElementById('viewGame').classList.add('hidden');
+            document.getElementById('viewGallery').classList.add('hidden');
+            document.getElementById('viewMenu').classList.remove('hidden');
+            document.getElementById('btnBackMenu').classList.add('hidden');
+        }
+
+        function toggleQuestionOrder() {
+            randomizeRounds = !randomizeRounds;
+            document.getElementById('orderIcon').textContent = randomizeRounds ? '🔀' : '🔢';
+            document.getElementById('orderLabel').textContent = randomizeRounds ? 'Babak: Acak Struktur' : 'Babak: Urut Alur';
+            showToast(
+                randomizeRounds
+                    ? 'Mode Acak Struktur aktif: Paragraf muncul acak agar siswa menganalisis isinya!'
+                    : 'Mode Urut Alur aktif: Paragraf muncul berurutan dari Orientasi hingga Koda.',
+                'amber'
+            );
+            if (currentLegend && !document.getElementById('viewGame').classList.contains('hidden')) {
+                selectLegend(currentLegend.id);
+            }
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            document.getElementById('soundIcon').textContent = soundEnabled ? '🔊' : '🔇';
+            if (!soundEnabled && 'speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+            }
+            showToast(soundEnabled ? 'Efek suara diaktifkan.' : 'Efek suara dibisukan.', 'amber');
+        }
+
+        function speakCurrentStory() {
+            if (!('speechSynthesis' in window)) {
+                showToast('Browser perangkat ini belum mendukung pembaca suara otomatis.', 'rose');
+                return;
+            }
+            window.speechSynthesis.cancel();
+            const scene = roundSequence[currentRoundIndex];
+            if (!scene) return;
+            const utter = new SpeechSynthesisUtterance(`${scene.paragraph}. Tantangan pose fisik kelompok: ${scene.poseInstruction}`);
+            utter.lang = 'id-ID';
+            utter.rate = 0.98;
+            window.speechSynthesis.speak(utter);
+            showToast('🗣️ Membacakan kutipan legenda & instruksi pose...', 'amber');
+        }
+
+        function openGuideModal() {
+            document.getElementById('guideModal').classList.remove('hidden');
+        }
+
+        function closeGuideModal() {
+            document.getElementById('guideModal').classList.add('hidden');
+        }
+
+        function showToast(message, color = 'amber') {
+            const container = document.getElementById('toastContainer');
+            const colorMap = {
+                amber: 'bg-amber-900 border-amber-400 text-amber-100',
+                emerald: 'bg-emerald-900 border-emerald-400 text-emerald-100',
+                rose: 'bg-rose-900 border-rose-400 text-rose-100',
+                pink: 'bg-pink-900 border-pink-400 text-pink-100'
+            };
+            const toast = document.createElement('div');
+            toast.className = `px-4 py-3 rounded-2xl border-2 shadow-xl font-bold text-xs md:text-sm flex items-center gap-2 transition-all duration-300 ${colorMap[color] || colorMap.amber}`;
+            toast.innerHTML = `<span>✨</span><span>${message}</span>`;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3200);
+        }
+
+        // Initialize on window load
+        window.onload = function () {
+            renderLegendCards();
+        };
+    </script>
+</body>
+</html>
